@@ -1,0 +1,12 @@
+struct PixelInputType
+{
+	float4 position : SV_POSITION;
+	float4 color : COLOR;
+};
+
+// 이 메소드의 결과를 SV_TARGET으로 사용하겠다
+// SV_TARGET - RGBA 값을 갖는 색상값
+float4 ColorPixelShader(PixelInputType input) : SV_TARGET
+{
+	return input.color;
+}

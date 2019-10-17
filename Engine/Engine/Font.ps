@@ -1,0 +1,38 @@
+// 텍스쳐 자원으로서 모델에 텍스쳐를 그릴 때 사용
+Texture2D shaderTexture;
+// 어떻게 텍스쳐의 픽셀을 모델에 씌울지 결정
+SamplerState SampleType;
+
+// 문자열에 사용할 색상 지정
+cbuffer PixelBuffer
+{
+	float4 pixelColor;
+};
+
+struct PixelInputType
+{
+	float4 position : SV_POSITION;
+	float2 tex : TEXCOORD0;
+};
+
+// 이 메소드의 결과를 SV_TARGET으로 사용하겠다
+// SV_TARGET - RGBA 값을 갖는 색상값
+float4 FontPixelShader(PixelInputType input) : SV_TARGET
+{
+	float4 color;
+
+	color = shaderTexture.Sample(SampleType, input.tex);
+
+	// 색상이 검정색이면 배경으로 취급하여 안보이게 한다
+	if(color.r == 0.0f)
+	{
+		color.a = 0.0f;
+	}
+	else
+	{
+		color.rgb = pixelColor.rgb;
+		color.a = 1.0f;
+	}
+
+	return color;
+}

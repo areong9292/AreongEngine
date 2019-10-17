@@ -1,0 +1,73 @@
+// 텍스쳐 자원으로서 모델에 텍스쳐를 그릴 때 사용
+Texture2D shaderTexture;
+// 어떻게 텍스쳐의 픽셀을 모델에 씌울지 결정
+SamplerState SampleType;
+
+// LightClass에서 색과 방향을 지정해준다
+cbuffer LightBuffer
+{
+	float4 ambientColor;		// 주변광 값
+	float4 diffuseColor;		// 조명의 색
+	float3 lightDirection;		// 조명의 방향
+	float specularPower;		// 정반사광 반사 강도
+	float4 specularColor;		// 정반사광 반사색
+}
+
+struct PixelInputType
+{
+	float4 position : SV_POSITION;
+	float2 tex : TEXCOORD0;
+	float3 normal : NORMAL;
+	float3 viewDirection : TEXCOORD1;
+};
+
+// 이 메소드의 결과를 SV_TARGET으로 사용하겠다
+// SV_TARGET - RGBA 값을 갖는 색상값
+float4 LightPixelShader(PixelInputType input) : SV_TARGET
+{
+	float4 textureColor;
+	float3 lightDir;
+	float lightIntensity;
+	float4 color;
+	float3 reflection;
+	float4 specular;
+
+	textureColor = shaderTexture.Sample(SampleType, input.tex);
+
+	// 기본값을 주변광 값으로 하여 모든 픽셀이 최소한 주변광 값을 가지게 한다
+	color = ambientColor;
+
+	// 빛의 방향
+	lightDir = -lightDirection;
+
+	// saturate - 값을 0~1 사이로 유지한다
+	// 빛의 세기는 삼각형의 법선 벡터, 빛의 방향 벡터의 내적으로 계산
+	lightIntensity = saturate(dot(input.normal, lightDir));
+
+	// 법선과 빛의 방향의 내적이 0보다 큰 경우 = 눈에 보이는 면
+	// 0보다 큰 경우에만 조명 값 = (diffuseColor * lightIntensity)
+	// 을 주변광 값에 더한다
+	if(lightIntensity > 0.0f)
+	{
+		color += (diffuseColor * lightIntensity);
+
+		// 주변광과 조명의 조합이 0 ~ 1 사이를 유지하게한다
+		color = saturate(color);
+
+		// 정반사 벡터를 계산한다
+		reflection = normalize(2 * lightIntensity * input.normal - lightDir);
+
+		// 정반사광 총량을 계산한다
+		// 정반사광 광원과 카메라 방향 사이의 각도가 작을수록
+		// 정반사광이 세진다
+		specular = pow(saturate(dot(reflection, input.viewDirection)), specularPower);
+	}
+
+	// 텍스쳐 픽셀 값과 조합
+	color = color * textureColor;
+
+	// 정반사 효과는 제일 마지막에 넣는다
+	color = saturate(color + specular);
+
+	return color;
+}

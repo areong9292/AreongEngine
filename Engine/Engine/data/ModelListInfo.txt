@@ -1,0 +1,59 @@
+ModelCount:3
+
+Model_1
+	color:
+		0.0 0.0 0.0
+
+	position:
+		-5.0 0.0 0.0
+
+	modelFilePath:
+		../Engine/data/sphere.txt
+
+	textureFilePath:
+		../Engine/data/dirt01.dds
+
+	shaderName:
+		default
+
+	frustum:
+		sphere
+
+
+Model_2
+	color:
+		0.0 0.0 0.0
+
+	position:
+		0.0 0.0 0.0
+
+	modelFilePath:
+		../Engine/data/cube.txt
+
+	textureFilePath:
+		../Engine/data/seafloor.dds
+
+	shaderName:
+		default
+
+	frustum:
+		sphere
+
+Model_3
+	color:
+		0.0 0.0 0.0
+
+	position:
+		5.0 0.0 0.0
+
+	modelFilePath:
+		../Engine/data/sphere.txt
+
+	textureFilePath:
+		../Engine/data/stone01.dds
+
+	shaderName:
+		default
+
+	frustum:
+		sphere

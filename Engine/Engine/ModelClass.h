@@ -1,0 +1,83 @@
+#ifndef _MODELCLASS_H_
+#define _MODELCLASS_H_
+
+#include <d3d11.h>
+#include <d3dx10math.h>
+
+// 텍스트 파일(모델 파일)을 읽기 위한 include
+#include <fstream>
+using namespace std;
+
+// 텍스쳐 로드를 위한 include
+#include "TextureClass.h"
+
+// 3D모델들의 복잡한 기하학들을 캡슐화하는 클래스
+class ModelClass
+{
+private:
+	// 정점 버퍼에 사용할 정점의 구조체 선언
+	// 버텍스 쉐이더의 입력과 형태가 같아야한다
+	struct VertexType
+	{
+		D3DXVECTOR3 position;
+		D3DXVECTOR2 texture;	// 텍스쳐를 입힐 것이다
+		D3DXVECTOR3 normal;		// 조명 지원을 위한 법선 벡터 추가
+	};
+
+	// 모델 포맷 구조체
+	struct ModelType
+	{
+		float x, y, z;		// 위치 좌표
+		float tu, tv;		// 텍스쳐 좌표
+		float nx, ny, nz;	// 법선 벡터
+	};
+
+public:
+	ModelClass();
+	ModelClass(const ModelClass&);
+	~ModelClass();
+
+	// 3D 모델의 버텍스 버퍼, 인덱스 버퍼들의 초기화와 종료 과정을 제어
+	bool Initialize(ID3D11Device*, char*, WCHAR*);		// 모델 파일명, 텍스쳐 경로
+	void Shutdown();
+
+	// 그래픽 카드에 모델들의 기하 정보를 넣고 컬러 쉐이더로 그릴 준비를 한다
+	void Render(ID3D11DeviceContext*);
+
+	int GetIndexCount();
+
+	// 쉐이더에게 텍스쳐 리소스를 전달한다
+	ID3D11ShaderResourceView* GetTexture();
+
+private:
+	// 3D 모델의 버텍스 버퍼, 인덱스 버퍼들의 초기화와 종료 과정을 제어
+	bool InitializeBuffers(ID3D11Device*);
+	void ShutdownBuffers();
+
+	// 그래픽 카드에 모델들의 기하 정보를 넣고 컬러 쉐이더로 그릴 준비를 한다
+	void RenderBuffers(ID3D11DeviceContext*);
+
+	// 텍스쳐를 불러온다
+	bool LoadTexture(ID3D11Device*, WCHAR*);
+
+	// 텍스쳐를 반환한다
+	void ReleaseTexture();
+
+	// 모델 데이터를 불러온다
+	bool LoadModel(char*);
+
+	// 모델 데이터를 반환한다
+	void ReleaseModel();
+
+private:
+	// 버텍스 버퍼, 인덱스 버퍼, 각 버퍼의 크기 정보를 가지고 있는 변수
+	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
+	int m_vertexCount, m_indexCount;
+
+	TextureClass* m_Texutre;
+
+	// 모델 데이터 저장용
+	ModelType* m_model;
+};
+
+#endif
