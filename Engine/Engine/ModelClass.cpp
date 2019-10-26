@@ -6,9 +6,10 @@ ModelClass::ModelClass()
 	m_vertexBuffer = nullptr;
 	m_indexBuffer = nullptr;
 
-	// 텍스쳐, 모델 포인터 초기화
-	m_Texutre = nullptr;
+	// 모델 포인터 초기화
 	m_model = nullptr;
+
+	m_Material = nullptr;
 }
 
 ModelClass::ModelClass(const ModelClass& other)
@@ -42,8 +43,10 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 		return false;
 	}
 
-	// 이 모델에서 사용할 텍스쳐를 로드한다
-	result = LoadTexture(device, textureFilename);
+	m_Material = new GameObject();
+	m_Material->addComponent<Material>();
+
+	result = m_Material->getComponent<Material>()->LoadTexture(device);
 	if (!result)
 	{
 		return false;
@@ -55,9 +58,6 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 // 버텍스 버퍼와 인덱스 버퍼를 해제하는 메소드를 호출
 void ModelClass::Shutdown()
 {
-	// 사용한 텍스쳐 객체를 반환한다
-	ReleaseTexture();
-
 	// 사용한 버텍스, 인덱스 버퍼를 반환한다
 	ShutdownBuffers();
 
@@ -78,12 +78,9 @@ int ModelClass::GetIndexCount()
 	return m_indexCount;
 }
 
-ID3D11ShaderResourceView * ModelClass::GetTexture()
+Material * ModelClass::GetModelMaterial()
 {
-	if (m_Texutre != nullptr)
-		return m_Texutre->GetTexture();
-	else
-		return nullptr;
+	return m_Material->getComponent<Material>();
 }
 
 // 버텍스 버퍼와 인덱스 버퍼를 생성한다
@@ -222,38 +219,6 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 	// 버텍스 버퍼로 그릴 기본형을 설정한다(삼각형)
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	return;
-}
-
-// 택스쳐 객체를 생성하고 초기화하는 메소드
-bool ModelClass::LoadTexture(ID3D11Device* device, WCHAR* filename)
-{
-	bool result;
-
-	m_Texutre = new TextureClass;
-	if (m_Texutre == nullptr)
-	{
-		return false;
-	}
-
-	result = m_Texutre->Initialize(device, filename);
-	if (!result)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-void ModelClass::ReleaseTexture()
-{
-	if (m_Texutre != nullptr)
-	{
-		m_Texutre->Shutdown();
-		delete m_Texutre;
-		m_Texutre = nullptr;
-	}
 
 	return;
 }

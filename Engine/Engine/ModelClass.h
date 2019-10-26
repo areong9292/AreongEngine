@@ -8,8 +8,9 @@
 #include <fstream>
 using namespace std;
 
-// 텍스쳐 로드를 위한 include
-#include "TextureClass.h"
+// 모델의 머테리얼
+#include "Material.h"
+#include "DesignPatternHeader.h"
 
 // 3D모델들의 복잡한 기하학들을 캡슐화하는 클래스
 class ModelClass
@@ -46,8 +47,7 @@ public:
 
 	int GetIndexCount();
 
-	// 쉐이더에게 텍스쳐 리소스를 전달한다
-	ID3D11ShaderResourceView* GetTexture();
+	Material* GetModelMaterial();
 
 private:
 	// 3D 모델의 버텍스 버퍼, 인덱스 버퍼들의 초기화와 종료 과정을 제어
@@ -56,12 +56,6 @@ private:
 
 	// 그래픽 카드에 모델들의 기하 정보를 넣고 컬러 쉐이더로 그릴 준비를 한다
 	void RenderBuffers(ID3D11DeviceContext*);
-
-	// 텍스쳐를 불러온다
-	bool LoadTexture(ID3D11Device*, WCHAR*);
-
-	// 텍스쳐를 반환한다
-	void ReleaseTexture();
 
 	// 모델 데이터를 불러온다
 	bool LoadModel(char*);
@@ -74,10 +68,11 @@ private:
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
 	int m_vertexCount, m_indexCount;
 
-	TextureClass* m_Texutre;
-
 	// 모델 데이터 저장용
 	ModelType* m_model;
+
+	// 모델의 머테리얼 오브젝트
+	GameObject* m_Material;
 };
 
 #endif

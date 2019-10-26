@@ -728,3 +728,8 @@ void D3DClass::TurnOffAlphaBlending()
 
 	return;
 }
+
+ID3D11RenderTargetView* D3DClass::GetRenderTargetView()
+{
+	return m_renderTargetView;
+}

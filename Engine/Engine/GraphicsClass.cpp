@@ -14,6 +14,11 @@ GraphicsClass::GraphicsClass()
 	m_ModelList = nullptr;
 	m_Frustum = nullptr;
 	m_ModelSphere = nullptr;
+
+	m_ImGui = nullptr;
+
+	m_Material = nullptr;
+	m_ShaderManager = nullptr;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
@@ -203,12 +208,51 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
 		return false;
 	}
+
+	m_ImGui = new ImGuiEditorClass();
+	if (m_ImGui == nullptr)
+	{
+		return false;
+	}
+
+	result = m_ImGui->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, m_D3D->GetRenderTargetView());
+	if (!result)
+	{
+		return false;
+	}
+
+	m_ShaderManager = Singleton<ShaderManager>::GetInstance();
+	if (m_ShaderManager == nullptr)
+	{
+		return false;
+	}
+
+	result = m_ShaderManager->Initialize(m_D3D->GetDevice(),m_D3D->GetDeviceContext(), hwnd, m_Camera, m_Light);
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
 }
 
 // 모든 그래픽 객체의 해제가 일어난다
 void GraphicsClass::Shutdown()
 {
+	// Cleanup
+	if (m_Material != nullptr)
+	{
+		delete m_Material;
+		m_Material = nullptr;
+	}
+
+	if (m_ImGui != nullptr)
+	{
+		m_ImGui->Shutdown();
+		delete m_ImGui;
+		m_ImGui = nullptr;
+	}
+
 	if (m_ModelSphere != nullptr)
 	{
 		m_ModelSphere->Shutdown();
@@ -396,7 +440,11 @@ bool GraphicsClass::Render(float rotation, int mouseX, int mouseY)
 
 			// 모델의 버텍스, 인덱스 버퍼를 파이프라인에 넣는다
 			m_ModelList->GetModel(index)->Render(m_D3D->GetDeviceContext());
+			
 
+			result = m_ShaderManager->Render(m_ModelList->GetModel(index), resultMatrix, viewMatrix, projectionMatrix);
+
+			/*
 			// 쉐이더로 그린다
 			result = m_LightShader->Render(
 				m_D3D->GetDeviceContext(),
@@ -410,7 +458,7 @@ bool GraphicsClass::Render(float rotation, int mouseX, int mouseY)
 				// 반사광
 				m_Camera->GetPosition(),					// 카메라의 위치
 				m_Light->GetSpecularColor(),				// 반사광의 색
-				m_Light->GetSpecularPower());				// 반사광의 강도
+				m_Light->GetSpecularPower());				// 반사광의 강도*/
 			if (!result)
 			{
 				return false;
@@ -467,6 +515,9 @@ bool GraphicsClass::Render(float rotation, int mouseX, int mouseY)
 	// Z버퍼를 켠다
 	m_D3D->TurnZBufferOn();
 	/// 2D 끝
+
+	// ImGui 출력
+	//m_ImGui->Render();
 
 	// 버퍼에 그려진 씬을 화면에 표시한다
 	m_D3D->EndScene();

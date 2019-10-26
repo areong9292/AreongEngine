@@ -1,31 +1,29 @@
-#include "FontShaderClass.h"
+#include "ColorShaderClass.h"
 
-FontShaderClass::FontShaderClass()
+ColorShaderClass::ColorShaderClass()
 {
 	m_vertexShader = nullptr;
 	m_pixelShader = nullptr;
 	m_layout = nullptr;
 	m_matrixBuffer = nullptr;
-	m_sampleState = nullptr;
-	m_pixelBuffer = nullptr;
 }
 
-FontShaderClass::FontShaderClass(const FontShaderClass& other)
+ColorShaderClass::ColorShaderClass(const ColorShaderClass& other)
 {
 }
 
 
-FontShaderClass::~FontShaderClass()
+ColorShaderClass::~ColorShaderClass()
 {
 }
 
-bool FontShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
+bool ColorShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
 	// 쉐이더를 초기화하는 메소드
 	// HLSL 쉐이더 파일의 이름을 넘겨준다
-	result = InitializeShader(device, hwnd, L"../Engine/font.vs", L"../Engine/font.ps");
+	result = InitializeShader(device, hwnd, L"../Engine/HLSL/Color.vs", L"../Engine/HLSL/Color.ps");
 	if (!result)
 	{
 		return false;
@@ -33,7 +31,7 @@ bool FontShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 	return true;
 }
 
-void FontShaderClass::Shutdown()
+void ColorShaderClass::Shutdown()
 {
 	// 버텍스 쉐이더, 픽셀 쉐이더 관련들을 반환한다
 	ShutdownShader();
@@ -41,12 +39,12 @@ void FontShaderClass::Shutdown()
 	return;
 }
 
-bool FontShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR4 pixelColor)
+bool ColorShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix)
 {
 	bool result;
 
 	// 렌더링에 사용할 쉐이더의 인자를 입력한다
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, pixelColor);
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
 	if (!result)
 	{
 		return false;
@@ -59,7 +57,7 @@ bool FontShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount,
 }
 
 // 쉐이더 파일을 불러오고 DirectX와 GPU에서 사용 가능하도록 한다
-bool FontShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
+bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -72,13 +70,7 @@ bool FontShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* v
 
 	unsigned int numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
-
-	// 텍스쳐 샘플러의 desc
-	D3D11_SAMPLER_DESC samplerDesc;
-
-	// 폰트 색상 지정용 desc
-	D3D11_BUFFER_DESC pixelBufferDesc;
-
+	
 	// 이 함수에서 사용하는 포인터들을 null로 설정
 	errorMessage = nullptr;
 	vertexShaderBuffer = nullptr;
@@ -87,17 +79,17 @@ bool FontShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* v
 	// 쉐이더 프로그램을 버퍼로 컴파일한다
 	// 정점 셰이더를 컴파일한다
 	result = D3DX11CompileFromFile(
-		vsFilename,						// 쉐이더 파일 이름
-		NULL,
-		NULL,
-		"FontVertexShader",				// 쉐이더 이름
-		"vs_5_0",						// 쉐이더 버전
-		D3D10_SHADER_ENABLE_STRICTNESS,
-		0,
-		NULL,
-		&vertexShaderBuffer,			// 쉐이더가 컴파일 될 버퍼
-		&errorMessage,					// 에러 문자열
-		NULL);
+						vsFilename,						// 쉐이더 파일 이름
+						NULL,
+						NULL,
+						"ColorVertexShader",			// 쉐이더 이름
+						"vs_5_0",						// 쉐이더 버전
+						D3D10_SHADER_ENABLE_STRICTNESS,
+						0,
+						NULL,
+						&vertexShaderBuffer,			// 쉐이더가 컴파일 될 버퍼
+						&errorMessage,					// 에러 문자열
+						NULL);
 	if (FAILED(result))
 	{
 		// 셰이더가 컴파일에 실패하면 에러 메세지를 기록
@@ -116,17 +108,17 @@ bool FontShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* v
 
 	// 픽셀 셰이더를 컴파일한다
 	result = D3DX11CompileFromFile(
-		psFilename,						// 쉐이더 파일 이름
-		NULL,
-		NULL,
-		"FontPixelShader",				// 쉐이더 이름
-		"ps_5_0",						// 쉐이더 버전
-		D3D10_SHADER_ENABLE_STRICTNESS,
-		0,
-		NULL,
-		&pixelShaderBuffer,				// 쉐이더가 컴파일 될 버퍼
-		&errorMessage,					// 에러 문자열
-		NULL);
+						psFilename,						// 쉐이더 파일 이름
+						NULL,
+						NULL,
+						"ColorPixelShader",				// 쉐이더 이름
+						"ps_5_0",						// 쉐이더 버전
+						D3D10_SHADER_ENABLE_STRICTNESS,
+						0,
+						NULL,
+						&pixelShaderBuffer,				// 쉐이더가 컴파일 될 버퍼
+						&errorMessage,					// 에러 문자열
+						NULL);
 	if (FAILED(result))
 	{
 		// 셰이더 컴파일이 실패하면 에러 메세지를 기록합니다.
@@ -166,7 +158,7 @@ bool FontShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* v
 	// 이 설정은 ModelClass와 셰이더에 있는 VertexType와 일치해야 한다
 
 	// SemanticName - 이 요소가 레이아웃에서 어떻게 사용되는지 알려준다
-	// 버텍스 쉐이더에서 입력은 POSITION, TEXCOORD이므로 2개 이름을 지정한다
+	// 버텍스 쉐이더에서 입력은 POSITION, COLOR이므로 2개 이름을 지정한다
 	polygonLayout[0].SemanticName = "POSITION";
 	polygonLayout[0].SemanticIndex = 0;
 
@@ -179,18 +171,18 @@ bool FontShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* v
 	polygonLayout[0].AlignedByteOffset = 0;
 	polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[0].InstanceDataStepRate = 0;
+	
 
 
-
-	polygonLayout[1].SemanticName = "TEXCOORD";
+	polygonLayout[1].SemanticName = "COLOR";
 	polygonLayout[1].SemanticIndex = 0;
 
-	// 텍스쳐 값에는 u,v 2가지 요소 사용
-	polygonLayout[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+	// 컬러값에는 r,g,b,a 4가지 요소 사용
+	polygonLayout[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	polygonLayout[1].InputSlot = 0;
 
 	// 위치벡터 사용하고 다음 요소 시작지점을 자동으로 찾는다
-	polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT; 
 	polygonLayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[1].InstanceDataStepRate = 0;
 
@@ -207,7 +199,7 @@ bool FontShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* v
 	// 더 이상 사용되지 않는 정점 셰이더 퍼버와 픽셀 셰이더 버퍼를 해제
 	vertexShaderBuffer->Release();
 	vertexShaderBuffer = nullptr;
-
+	
 	pixelShaderBuffer->Release();
 	pixelShaderBuffer = nullptr;
 
@@ -216,142 +208,86 @@ bool FontShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* v
 
 	// 정점 셰이더에 있는 행렬 상수 버퍼의 description을 작성
 	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	matrixBufferDesc.ByteWidth = sizeof(ConstantBufferType);
+	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
 
 	// 상수 버퍼에 이 버퍼를 사용한다는 것을 설정한다
 	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	matrixBufferDesc.MiscFlags = 0;
 	matrixBufferDesc.StructureByteStride = 0;
-
+	
 	// 상수 버퍼 포인터를 만들어 이 클래스에서
 	// 버텍스 셰이더 상수 버퍼에 접근할 수 있게 한다
 	result = device->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// SamplerState 생성
-	// Filter - 최종 도형 표면에서 텍스쳐의 어느 픽셀이 사용, 혼합될 것인가
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-
-	// 0.0f, 1.0f 사이에 값이 있도록 wrap 설정
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-
-	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 1;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	samplerDesc.BorderColor[0] = 0;
-	samplerDesc.BorderColor[1] = 0;
-	samplerDesc.BorderColor[2] = 0;
-	samplerDesc.BorderColor[3] = 0;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	// SamplerState 생성
-	result = device->CreateSamplerState(&samplerDesc, &m_sampleState);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// 픽셀 버퍼 Desc를 생성한다 - 글자 색상 지정용
-	pixelBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	pixelBufferDesc.ByteWidth = sizeof(PixelBufferType);
-	pixelBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	pixelBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	pixelBufferDesc.MiscFlags = 0;
-	pixelBufferDesc.StructureByteStride = 0;
-
-	// 픽셀 버퍼 생성
-	result = device->CreateBuffer(&pixelBufferDesc, NULL, &m_pixelBuffer);
 	if(FAILED(result))
 	{
 		return false;
 	}
-
-
+	
 	return true;
 }
 
-void FontShaderClass::ShutdownShader()
+void ColorShaderClass::ShutdownShader()
 {
-	// 픽셀 버퍼 해제
-	if (m_pixelBuffer != nullptr)
-	{
-		m_pixelBuffer->Release();
-		m_pixelBuffer = nullptr;
-	}
-
-	// 샘플러 상태를 해제한다
-	if (m_sampleState != nullptr)
-	{
-		m_sampleState->Release();
-		m_sampleState = nullptr;
-	}
-
 	// 상수 버퍼를 해제한다
-	if (m_matrixBuffer != nullptr)
+	if(m_matrixBuffer != nullptr)
 	{
 		m_matrixBuffer->Release();
 		m_matrixBuffer = nullptr;
 	}
-
+	
 	// 레이아웃을 해제한다
-	if (m_layout != nullptr)
+	if(m_layout != nullptr)
 	{
 		m_layout->Release();
 		m_layout = nullptr;
 	}
-
+	
 	// 픽셀 셰이더를 해제한다
-	if (m_pixelShader != nullptr)
+	if(m_pixelShader != nullptr)
 	{
 		m_pixelShader->Release();
 		m_pixelShader = nullptr;
 	}
-
+	
 	// 정점 셰이더를 해제한다
-	if (m_vertexShader != nullptr)
+	if(m_vertexShader != nullptr)
 	{
 		m_vertexShader->Release();
 		m_vertexShader = nullptr;
 	}
-
+	
 	return;
 }
 
-void FontShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
+void ColorShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long bufferSize, i;
 	ofstream fout;
-
+	
 	// 에러 메세지를 담고 있는 문자열 버퍼의 포인터를 가져옵니다.
 	compileErrors = (char*)(errorMessage->GetBufferPointer());
-
+	
 	// 메세지의 길이를 가져옵니다.
 	bufferSize = errorMessage->GetBufferSize();
-
+	
 	// 파일을 열고 안에 메세지를 기록합니다.
 	fout.open("shader-error.txt");
-
+	
 	// 에러 메세지를 씁니다.
-	for (i = 0; i < bufferSize; i++)
+	for(i=0; i<bufferSize; i++)
 	{
 		fout << compileErrors[i];
 	}
-
+	
 	// 파일을 닫습니다.
 	fout.close();
-
+	
 	// 에러 메세지를 반환합니다.
 	errorMessage->Release();
 	errorMessage = nullptr;
-
+	
 	// 컴파일 에러가 있음을 팝업 메세지로 알려줍니다.
 	MessageBox(hwnd, L"Error compiling shader. Check shader-error.txt for message.", shaderFilename, MB_OK);
 
@@ -360,14 +296,13 @@ void FontShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hw
 
 // 쉐이더의 전역 변수를 쉽게 다룰 수 있게 한다
 // GraphicsClass에서 만들어진 행렬들을 사용한다
-bool FontShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR4 pixelColor)
+bool ColorShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	ConstantBufferType* dataPtr;
+	MatrixBufferType* dataPtr;
 	unsigned int bufferNumber;
-	PixelBufferType* dataPtr2;
-
+	
 	// transpose - 전치, 행과 열을 교환한다
 	// 행렬을 transpose하여 쉐이더에서 사용할 수 있게 한다
 	// 쉐이더에서나 directX -> openGL로 넘어갈 경우에도 전치를 사용하는 듯 - 서로 좌표계가 다르다
@@ -377,57 +312,31 @@ bool FontShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3
 	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);
 	D3DXMatrixTranspose(&viewMatrix, &viewMatrix);
 	D3DXMatrixTranspose(&projectionMatrix, &projectionMatrix);
-
+	
 	// 상수 버퍼의 내용을 쓸 수 있도록 잠근다
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if (FAILED(result))
+	if(FAILED(result))
 	{
 		return false;
 	}
-
+	
 	// 상수 버퍼의 데이터에 대한 포인터를 가져온다
-	dataPtr = (ConstantBufferType*)mappedResource.pData;
-
+	dataPtr = (MatrixBufferType*)mappedResource.pData;
+	
 	// 상수 버퍼에 행렬을 복사한다
 	dataPtr->world = worldMatrix;
 	dataPtr->view = viewMatrix;
 	dataPtr->projection = projectionMatrix;
-
+	
 	// 상수 버퍼의 잠금을 푼다
 	deviceContext->Unmap(m_matrixBuffer, 0);
-
+	
 	// 버텍스 쉐이더에서의 상수 버퍼의 위치를 설정한다
 	bufferNumber = 0;
-
-	// 버텍스 쉐이더의 상수 버퍼를 바뀐 값으로 바꾼다
-	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
-
-	// 픽셀 쉐이더에 텍스쳐를 설정한다
-	// 텍스쳐는 반드시 버퍼에 렌더링이 일어나기 전에 설정되어 있어야한다
-	deviceContext->PSSetShaderResources(0, 1, &texture);
-
-	// 픽셀 버퍼 잠근다
-	result = deviceContext->Map(m_pixelBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// 잠근 데이터 포인터 가져오고
-	dataPtr2 = (PixelBufferType*)mappedResource.pData;
-
-	// 색상을 넘겨준다
-	dataPtr2->pixelColor = pixelColor;
 	
-	// 다 썻으니 잠근거 풀어줌
-	deviceContext->Unmap(m_pixelBuffer, 0);
-
-	// 픽셀 쉐이더에서 버퍼의 위치를 지정해줌
-	bufferNumber = 0;
-
-	// 픽셀 쉐이더 상에서 버퍼 위치 설정해준다
-	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_pixelBuffer);
-
+	// 마지막으로 버텍스 쉐이더의 상수 버퍼를 바뀐 값으로 바꾼다
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+	
 	return true;
 }
 
@@ -435,9 +344,8 @@ bool FontShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3
 // 1. 입력 레이아웃을 Input assembler에 연결한다
 // 이 연결로 GPU 버텍스 버퍼의 자료구조를 알게 된다
 // 2. 버텍스 버퍼를 그리기 위한 버텍스, 픽셀 쉐이더를 설정한다
-// 3. 픽셀 쉐이더의 샘플러 상태를 설정한다
 // 쉐이더가 설정되면 deviceContext에서 DrawIndexed 메소드로 삼각형을 그린다
-void FontShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+void ColorShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
 {
 	// 1. 버텍스 입력 레이아웃을 설정한다
 	deviceContext->IASetInputLayout(m_layout);
@@ -445,9 +353,6 @@ void FontShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int index
 	// 2. 삼각형을 그릴 버텍스, 픽셀 쉐이더를 설정한다
 	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
 	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
-
-	// 3. 픽셀 쉐이더의 샘플러 상태를 설정한다
-	deviceContext->PSSetSamplers(0, 1, &m_sampleState);
 
 	// 삼각형을 그린다
 	deviceContext->DrawIndexed(indexCount, 0, 0);

@@ -4,13 +4,19 @@
 #include "D3DClass.h"
 #include "CameraClass.h"
 #include "ModelClass.h"
-#include "LightShaderClass.h"
+#include "ShaderClass/LightShaderClass.h"
 #include "LightClass.h"
-#include "TextureShaderClass.h"
+#include "ShaderClass/TextureShaderClass.h"
 #include "BitmapClass.h"
 #include "TextClass.h"
 #include "FrustumClass.h"
 #include "ModelListClass.h"
+
+#include "ImGui/ImGuiEditorClass.h"
+
+#include "DesignPatternHeader.h"
+
+#include "Material.h"
 
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
@@ -51,6 +57,8 @@ private:
 	FrustumClass* m_Frustum;
 	ModelClass* m_ModelSphere;
 
+	ImGuiEditorClass* m_ImGui;
+
 
 	bool m_beginCheck = false;
 	int m_screenWidth = 0;
@@ -59,6 +67,10 @@ private:
 	int pickedModelIndex = 0;
 
 	D3DXMATRIX baseViewMatrix;
+
+	GameObject* m_Material;
+
+	ShaderManager* m_ShaderManager;
 };
 
 #endif

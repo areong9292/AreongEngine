@@ -7,7 +7,6 @@ Component::Component(GameObject* gameObject) : gameObject(gameObject), transform
 
 Component::~Component()
 {
-	cout << "component delete" << endl;
 }
 
 void Component::setOwner(GameObject * pOwner)

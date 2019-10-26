@@ -54,6 +54,9 @@ public:
 	void TurnOnAlphaBlending();
 	void TurnOffAlphaBlending();
 
+	// 렌더타겟뷰 리턴하는 메소드
+	ID3D11RenderTargetView* GetRenderTargetView();
+
 private:
 	bool m_vsync_enabled;							// 수직동기화 사용여부
 

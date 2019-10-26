@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -123,22 +123,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\DesignPattern\Component.cpp" />
+    <ClCompile Include="..\..\DesignPattern\GameObject.cpp" />
+    <ClCompile Include="..\..\DesignPattern\Transform.cpp" />
     <ClCompile Include="BitmapClass.cpp" />
     <ClCompile Include="CameraClass.cpp" />
-    <ClCompile Include="ColorShaderClass.cpp" />
     <ClCompile Include="D3DClass.cpp" />
     <ClCompile Include="FontClass.cpp" />
-    <ClCompile Include="FontShaderClass.cpp" />
     <ClCompile Include="FrustumClass.cpp" />
+    <ClCompile Include="ImGui\imgui.cpp" />
+    <ClCompile Include="ImGui\ImGuiEditorClass.cpp" />
+    <ClCompile Include="ImGui\imgui_demo.cpp" />
+    <ClCompile Include="ImGui\imgui_draw.cpp" />
+    <ClCompile Include="ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="ImGui\imgui_widgets.cpp" />
     <ClCompile Include="LightClass.cpp" />
-    <ClCompile Include="LightShaderClass.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="ModelListClass.cpp" />
     <ClCompile Include="PositionClass.cpp" />
+    <ClCompile Include="ShaderClass\ColorShaderClass.cpp" />
+    <ClCompile Include="ShaderClass\FontShaderClass.cpp" />
+    <ClCompile Include="ShaderClass\LightShaderClass.cpp" />
+    <ClCompile Include="ShaderClass\TextureShaderClass.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="SoundClass.cpp" />
     <ClCompile Include="TextClass.cpp" />
     <ClCompile Include="TextureClass.cpp" />
-    <ClCompile Include="TextureShaderClass.cpp" />
     <ClCompile Include="TimerClass.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="GraphicsClass.cpp" />
@@ -146,36 +158,52 @@
     <ClCompile Include="SystemClass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\DesignPattern\Component.h" />
+    <ClInclude Include="..\..\DesignPattern\GameObject.h" />
+    <ClInclude Include="..\..\DesignPattern\Singleton.h" />
+    <ClInclude Include="..\..\DesignPattern\Transform.h" />
     <ClInclude Include="BitmapClass.h" />
     <ClInclude Include="CameraClass.h" />
-    <ClInclude Include="ColorShaderClass.h" />
     <ClInclude Include="D3DClass.h" />
+    <ClInclude Include="DesignPatternHeader.h" />
     <ClInclude Include="FontClass.h" />
-    <ClInclude Include="FontShaderClass.h" />
     <ClInclude Include="FrustumClass.h" />
     <ClInclude Include="GraphicsClass.h" />
+    <ClInclude Include="ImGui\imconfig.h" />
+    <ClInclude Include="ImGui\imgui.h" />
+    <ClInclude Include="ImGui\ImGuiEditorClass.h" />
+    <ClInclude Include="ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="ImGui\imgui_internal.h" />
+    <ClInclude Include="ImGui\imstb_rectpack.h" />
+    <ClInclude Include="ImGui\imstb_textedit.h" />
+    <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="InputClass.h" />
     <ClInclude Include="LightClass.h" />
-    <ClInclude Include="LightShaderClass.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="ModelClass.h" />
     <ClInclude Include="ModelListClass.h" />
     <ClInclude Include="PositionClass.h" />
+    <ClInclude Include="ShaderClass\ColorShaderClass.h" />
+    <ClInclude Include="ShaderClass\FontShaderClass.h" />
+    <ClInclude Include="ShaderClass\LightShaderClass.h" />
+    <ClInclude Include="ShaderClass\TextureShaderClass.h" />
+    <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="SoundClass.h" />
     <ClInclude Include="SystemClass.h" />
     <ClInclude Include="TextClass.h" />
     <ClInclude Include="TextureClass.h" />
-    <ClInclude Include="TextureShaderClass.h" />
     <ClInclude Include="TimerClass.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Color.ps" />
-    <None Include="Color.vs" />
-    <None Include="Font.ps" />
-    <None Include="Font.vs" />
-    <None Include="Light.ps" />
-    <None Include="Light.vs" />
-    <None Include="Texture.ps" />
-    <None Include="Texture.vs" />
+    <None Include="HLSL\Color.ps" />
+    <None Include="HLSL\Color.vs" />
+    <None Include="HLSL\Font.ps" />
+    <None Include="HLSL\Font.vs" />
+    <None Include="HLSL\Light.ps" />
+    <None Include="HLSL\Light.vs" />
+    <None Include="HLSL\Texture.ps" />
+    <None Include="HLSL\Texture.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,7 +2,7 @@
 #define _TEXTCLASS_H_
 
 #include "FontClass.h"
-#include "FontShaderClass.h"
+#include "ShaderClass/FontShaderClass.h"
 
 // 2d 문자열을 화면에 그리는 클래스
 class TextClass

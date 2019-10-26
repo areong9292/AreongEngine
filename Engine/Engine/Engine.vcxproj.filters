@@ -13,6 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\ShaderClass">
+      <UniqueIdentifier>{0b409afd-dd59-4307-8de5-1a4c29caf157}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\ShaderClass">
+      <UniqueIdentifier>{ec7640b4-ac43-4791-9a12-f0656934e50a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\ImGui">
+      <UniqueIdentifier>{54f1c78f-4674-460f-921a-897f0f5c1e77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\ImGui">
+      <UniqueIdentifier>{0e703060-f158-41de-9753-1e927bb14246}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\DesignPattern">
+      <UniqueIdentifier>{33a9ca79-1dad-4bea-bd34-a68912178657}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\DesignPattern">
+      <UniqueIdentifier>{94d7d1af-348b-4648-8d45-0822ecfb9615}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DClass.cpp">
@@ -33,22 +51,13 @@
     <ClCompile Include="ModelClass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ColorShaderClass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="CameraClass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="TextureClass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="TextureShaderClass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="LightClass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="LightShaderClass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="BitmapClass.cpp">
@@ -58,9 +67,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="FontClass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="FontShaderClass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="FrustumClass.cpp">
@@ -78,11 +84,56 @@
     <ClCompile Include="SoundClass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderClass\ColorShaderClass.cpp">
+      <Filter>소스 파일\ShaderClass</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderClass\FontShaderClass.cpp">
+      <Filter>소스 파일\ShaderClass</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderClass\LightShaderClass.cpp">
+      <Filter>소스 파일\ShaderClass</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderClass\TextureShaderClass.cpp">
+      <Filter>소스 파일\ShaderClass</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_demo.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_draw.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_dx11.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_widgets.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_win32.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\ImGuiEditorClass.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DesignPattern\Component.cpp">
+      <Filter>소스 파일\DesignPattern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DesignPattern\GameObject.cpp">
+      <Filter>소스 파일\DesignPattern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DesignPattern\Transform.cpp">
+      <Filter>소스 파일\DesignPattern</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>소스 파일\ShaderClass</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GraphicsClass.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="SystemClass.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -95,22 +146,13 @@
     <ClInclude Include="ModelClass.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ColorShaderClass.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CameraClass.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="TextureClass.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="TextureShaderClass.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="LightClass.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="LightShaderClass.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="BitmapClass.h">
@@ -120,9 +162,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="FontClass.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="FontShaderClass.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="FrustumClass.h">
@@ -140,30 +179,93 @@
     <ClInclude Include="SoundClass.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderClass\ColorShaderClass.h">
+      <Filter>헤더 파일\ShaderClass</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderClass\FontShaderClass.h">
+      <Filter>헤더 파일\ShaderClass</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderClass\LightShaderClass.h">
+      <Filter>헤더 파일\ShaderClass</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderClass\TextureShaderClass.h">
+      <Filter>헤더 파일\ShaderClass</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imconfig.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_dx11.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_internal.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsClass.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_win32.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\ImGuiEditorClass.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_rectpack.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_textedit.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_truetype.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DesignPattern\Component.h">
+      <Filter>헤더 파일\DesignPattern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DesignPattern\GameObject.h">
+      <Filter>헤더 파일\DesignPattern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DesignPattern\Singleton.h">
+      <Filter>헤더 파일\DesignPattern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DesignPattern\Transform.h">
+      <Filter>헤더 파일\DesignPattern</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignPatternHeader.h">
+      <Filter>헤더 파일\DesignPattern</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>헤더 파일\ShaderClass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Color.vs">
+    <None Include="HLSL\Color.ps">
       <Filter>리소스 파일</Filter>
     </None>
-    <None Include="Color.ps">
+    <None Include="HLSL\Color.vs">
       <Filter>리소스 파일</Filter>
     </None>
-    <None Include="Texture.vs">
+    <None Include="HLSL\Font.ps">
       <Filter>리소스 파일</Filter>
     </None>
-    <None Include="Texture.ps">
+    <None Include="HLSL\Font.vs">
       <Filter>리소스 파일</Filter>
     </None>
-    <None Include="Light.vs">
+    <None Include="HLSL\Light.ps">
       <Filter>리소스 파일</Filter>
     </None>
-    <None Include="Light.ps">
+    <None Include="HLSL\Light.vs">
       <Filter>리소스 파일</Filter>
     </None>
-    <None Include="Font.vs">
+    <None Include="HLSL\Texture.ps">
       <Filter>리소스 파일</Filter>
     </None>
-    <None Include="Font.ps">
+    <None Include="HLSL\Texture.vs">
       <Filter>리소스 파일</Filter>
     </None>
   </ItemGroup>
