@@ -517,7 +517,7 @@ bool GraphicsClass::Render(float rotation, int mouseX, int mouseY)
 	/// 2D 끝
 
 	// ImGui 출력
-	//m_ImGui->Render();
+	m_ImGui->Render();
 
 	// 버퍼에 그려진 씬을 화면에 표시한다
 	m_D3D->EndScene();

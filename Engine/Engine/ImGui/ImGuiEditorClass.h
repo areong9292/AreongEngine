@@ -4,6 +4,7 @@
 #include <d3d11.h>
 
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
 
@@ -21,16 +22,29 @@ public:
 
 
 private:
+	void DrawDock();
+	void CreateDock();
+
+	void DrawHierarchy();
+	void DrawInspector();
+
+	void HelpMarker(const char* desc);
+
 	ID3D11Device* m_Device;
 	ID3D11DeviceContext* m_DeviceContext;
 	ID3D11RenderTargetView* m_RenderTargetView;
 
-
-
-	// Our state
+	// imgui state
 	bool show_demo_window = true;
 	bool show_another_window = false;
+	bool show_dock_window = true;
+
+	bool show_hierarchy_window = true;
+	bool show_inspector_window = true;
+
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+	ImGuiID dockspace_id;
 };
 
 #endif // !_IMGUIEDITORCLASS_H_

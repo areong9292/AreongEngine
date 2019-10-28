@@ -42,6 +42,12 @@ void Material::SetShaderType(ShaderManager::ShaderType setShaderType)
 	m_ShaderType = setShaderType;
 }
 
+void Material::SetTexture(ID3D11Device* device, WCHAR * textureFilePath)
+{
+	m_TextureFilePath = textureFilePath;
+	LoadTexture(device);
+}
+
 WCHAR * Material::GetTexturePath()
 {
 	return m_TextureFilePath;
@@ -51,16 +57,18 @@ void Material::UpdateComponent()
 {
 }
 
-
 // 택스쳐 객체를 생성하고 초기화하는 메소드
 bool Material::LoadTexture(ID3D11Device* device)
 {
 	bool result;
 
-	m_Texutre = new TextureClass;
 	if (m_Texutre == nullptr)
 	{
-		return false;
+		m_Texutre = new TextureClass;
+		if (m_Texutre == nullptr)
+		{
+			return false;
+		}
 	}
 
 	result = m_Texutre->Initialize(device, m_TextureFilePath);

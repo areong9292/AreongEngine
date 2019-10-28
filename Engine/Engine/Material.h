@@ -22,6 +22,8 @@ public:
 	ShaderManager::ShaderType GetShaderType();
 	void SetShaderType(ShaderManager::ShaderType setShaderType);
 
+	void SetTexture(ID3D11Device* device, WCHAR * textureFilePath);
+
 	WCHAR* GetTexturePath();
 
 	// 텍스쳐를 불러온다

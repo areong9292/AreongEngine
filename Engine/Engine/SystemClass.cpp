@@ -381,8 +381,12 @@ void SystemClass::ShutdownWindows()
 // 윈도우 시스템에서 메세지를 보내는 곳
 // 윈도우 만들때 wc.lpfnWndProc = WndProc; 구문으로
 // 윈도우에서 발생하는 메세지는 이 메소드로 오게 된다
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, umsg, wparam, lparam))
+		return true;
+
 	switch (umsg)
 	{
 		// 윈도우 제거 확인
