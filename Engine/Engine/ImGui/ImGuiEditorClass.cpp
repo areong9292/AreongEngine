@@ -1,4 +1,5 @@
 #include "ImGuiEditorClass.h"
+#include "../GraphicsClass.h"
 
 ImGuiEditorClass::ImGuiEditorClass()
 {
@@ -12,12 +13,14 @@ ImGuiEditorClass::~ImGuiEditorClass()
 {
 }
 
-bool ImGuiEditorClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, ID3D11RenderTargetView* renderTargetView)
+bool ImGuiEditorClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, ID3D11RenderTargetView* renderTargetView, GraphicsClass* graphics)
 {
 	// 초기화로 사용한 값 저장
 	m_Device = device;
 	m_DeviceContext = deviceContext;
 	m_RenderTargetView = renderTargetView;
+
+	m_Graphics = graphics;
 
 	// ImGui 초기화
 	IMGUI_CHECKVERSION();
@@ -67,7 +70,7 @@ void ImGuiEditorClass::Shutdown()
 	ImGui::DestroyContext();
 }
 
-bool ImGuiEditorClass::Render()
+bool ImGuiEditorClass::Render(ID3D11ShaderResourceView* shaderResourceView)
 {
 	ImGuiIO& io = ImGui::GetIO();
 
@@ -77,7 +80,7 @@ bool ImGuiEditorClass::Render()
 	ImGui::NewFrame();
 
 	// Draw Dock Space
-	DrawDock();
+	DrawDock(shaderResourceView);
 
 	// Rendering
 	ImGui::Render();
@@ -95,7 +98,7 @@ bool ImGuiEditorClass::Render()
 	return true;
 }
 
-void ImGuiEditorClass::DrawDock()
+void ImGuiEditorClass::DrawDock(ID3D11ShaderResourceView* shaderResourceView)
 {
 	static bool opt_fullscreen_persistant = true;
 	bool opt_fullscreen = opt_fullscreen_persistant;
@@ -112,7 +115,7 @@ void ImGuiEditorClass::DrawDock()
 		ImGui::SetNextWindowViewport(viewport->ID);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse;
 		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 	}
 
@@ -145,8 +148,8 @@ void ImGuiEditorClass::DrawDock()
 	{
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-		//if (show_demo_window)
-			//ImGui::ShowDemoWindow(&show_demo_window);
+		if (show_demo_window)
+			ImGui::ShowDemoWindow(&show_demo_window);
 
 		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 		{
@@ -181,21 +184,21 @@ void ImGuiEditorClass::DrawDock()
 			ImGui::End();
 		}
 
-
-		// 3. Show another simple window.
-		if (show_hierarchy_window)
 		{
-			ImGui::Begin("Hierarchy", &show_hierarchy_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-			
-			ImGui::End();
+		ImGui::Begin("scene");
+		ImGui::Image((void*)shaderResourceView, ImVec2(512, 512));
+		ImGui::End();
 		}
 
-		// 3. Show another simple window.
+
+		if (show_hierarchy_window)
+		{
+			DrawHierarchy();
+		}
+
 		if (show_inspector_window)
 		{
-			ImGui::Begin("Inspector", &show_inspector_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-			
-			ImGui::End();
+			DrawInspector();
 		}
 
 
@@ -269,10 +272,30 @@ void ImGuiEditorClass::CreateDock()
 
 void ImGuiEditorClass::DrawHierarchy()
 {
+	ImGui::Begin("Hierarchy", &show_hierarchy_window);
+
+	if (m_Graphics != nullptr)
+	{
+		// 그래픽 클래스에서 모델 리스트를 읽어온다
+		ModelListClass* modelList = m_Graphics->GetModelList();
+		static int selected = -1;
+		for (int i = 0; i < modelList->GetModelCount(); i++)
+		{
+			if (ImGui::Selectable(modelList->GetModelName(i) + i, selected == i))
+			{
+				selected = i;
+			}
+		}
+	}
+
+	ImGui::End();
 }
 
 void ImGuiEditorClass::DrawInspector()
 {
+	ImGui::Begin("Inspector", &show_inspector_window);
+
+	ImGui::End();
 }
 
 // Helper to display a little (?) mark which shows a tooltip when hovered.

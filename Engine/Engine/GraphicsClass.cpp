@@ -15,6 +15,8 @@ GraphicsClass::GraphicsClass()
 	m_Frustum = nullptr;
 	m_ModelSphere = nullptr;
 
+	m_RenderTexture = nullptr;
+
 	m_ImGui = nullptr;
 
 	m_Material = nullptr;
@@ -209,13 +211,25 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	m_RenderTexture = new RenderTextureClass;
+	if (m_RenderTexture == nullptr)
+	{
+		return false;
+	}
+
+	result = m_RenderTexture->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight);
+	if (!result)
+	{
+		return false;
+	}
+
 	m_ImGui = new ImGuiEditorClass();
 	if (m_ImGui == nullptr)
 	{
 		return false;
 	}
 
-	result = m_ImGui->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, m_D3D->GetRenderTargetView());
+	result = m_ImGui->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, m_D3D->GetRenderTargetView(), this);
 	if (!result)
 	{
 		return false;
@@ -251,6 +265,13 @@ void GraphicsClass::Shutdown()
 		m_ImGui->Shutdown();
 		delete m_ImGui;
 		m_ImGui = nullptr;
+	}
+
+	if (m_RenderTexture != nullptr)
+	{
+		m_RenderTexture->Shutdown();
+		delete m_RenderTexture;
+		m_RenderTexture = nullptr;
 	}
 
 	if (m_ModelSphere != nullptr)
@@ -358,7 +379,7 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, float rotationY, bool beginChe
 	}
 
 	// 매 프레임마다 Render를 불러 그래픽 렌더링을 수행한다
-	result = Render(rotation, mouseX, mouseY);
+	result = Render(rotation);
 	if (!result)
 	{
 		return false;
@@ -367,8 +388,105 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, float rotationY, bool beginChe
 	return true;
 }
 
+ModelListClass * GraphicsClass::GetModelList()
+{
+	return m_ModelList;
+}
+
 // 실제로 그리기를 호출하는 함수
-bool GraphicsClass::Render(float rotation, int mouseX, int mouseY)
+bool GraphicsClass::Render(float rotation)
+{
+	bool result;
+
+	// 전체 씬을 텍스쳐에 그린다
+	result = RenderToTexture(rotation);
+	if(!result)
+	{
+		return false;
+	}
+
+	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+
+	// 전체 씬을 그린다
+	result = RenderScene(rotation);
+	if (!result)
+	{
+		return false;
+	}
+
+	/// 2D 시작
+	// Z버퍼를 끈다
+	m_D3D->TurnZBufferOff();
+	
+	// 알파 블렌딩 켠다
+	m_D3D->TurnOnAlphaBlending();
+	
+	/*result = m_Bitmap->Render(m_D3D->GetDeviceContext(), mouseX, mouseY);
+	if (!result)
+	{
+		return false;
+	}
+
+	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Bitmap->GetIndexCount(), worldMatrix, baseViewMatrix, orthoMatrix, m_Bitmap->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
+	
+	// 현재 렌더링하고 있는 모델의 수를 출력한다
+	result = m_Text->SetRenderCount(renderCount, m_D3D->GetDeviceContext());
+	if (!result)
+	{
+		return false;
+	}
+
+	// 문장 그린다
+	result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix2D, orthoMatrix);
+	if (!result)
+	{
+		return false;
+	}*/
+
+	// 알파 블렌딩 끈다
+	m_D3D->TurnOffAlphaBlending();
+
+	// Z버퍼를 켠다
+	m_D3D->TurnZBufferOn();
+	/// 2D 끝
+
+	// ImGui 출력
+	m_ImGui->Render(m_RenderTexture->GetShaderResourceView());
+
+	// 버퍼에 그려진 씬을 화면에 표시한다
+	m_D3D->EndScene();
+
+	return true;
+}
+
+bool GraphicsClass::RenderToTexture(float rotation)
+{
+	bool result;
+	
+	// RTT가 렌더링 타겟이 되도록 한다
+	m_RenderTexture->SetRenderTarget(m_D3D->GetDeviceContext(), m_D3D->GetDepthStencilView());
+
+	// RTT를 클리어한다
+	m_RenderTexture->ClearRenderTarget(m_D3D->GetDeviceContext(), m_D3D->GetDepthStencilView(), 0.0f, 0.0f, 0.0f, 1.0f);
+	
+	// 여기서 씬을 그리면 백버퍼 대신 RTT에 렌더링된다
+	result = RenderScene(rotation);
+	if(!result)
+	{
+		return false;
+	}
+	
+	// 렌더링 타겟을 RTT에서 다시 백버퍼로 변경한다
+	m_D3D->SetBackBufferRenderTarget();
+	
+	return true;
+}
+
+bool GraphicsClass::RenderScene(float rotation)
 {
 	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
 	D3DXMATRIX  scaleMatrix, worldMatrix2D;
@@ -395,7 +513,7 @@ bool GraphicsClass::Render(float rotation, int mouseX, int mouseY)
 
 	// 현재 카메라 위치를 기준으로 뷰 행렬을 생성한다
 	m_Camera->Render();
-	
+
 	// 카메라, d3d 객체로 부터 월드, 뷰, 투영행렬을 가져온다
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_D3D->GetWorldMatrix(worldMatrix);
@@ -414,7 +532,7 @@ bool GraphicsClass::Render(float rotation, int mouseX, int mouseY)
 
 	// 현재 화면에서 그리고 있는 모델의 수를 저장하는 변수
 	renderCount = 0;
-	
+
 	// 모든 모델을 확인하면서 그 모델이 절두체 안에 속해있으면
 	// 그린다
 	for (index = 0; index < modelCount; index++)
@@ -440,25 +558,10 @@ bool GraphicsClass::Render(float rotation, int mouseX, int mouseY)
 
 			// 모델의 버텍스, 인덱스 버퍼를 파이프라인에 넣는다
 			m_ModelList->GetModel(index)->Render(m_D3D->GetDeviceContext());
-			
+
 
 			result = m_ShaderManager->Render(m_ModelList->GetModel(index), resultMatrix, viewMatrix, projectionMatrix);
 
-			/*
-			// 쉐이더로 그린다
-			result = m_LightShader->Render(
-				m_D3D->GetDeviceContext(),
-				m_ModelList->GetModel(index)->GetIndexCount(),
-				resultMatrix, viewMatrix, projectionMatrix,	// 월드, 뷰, 투영 행렬
-				m_ModelList->GetModel(index)->GetTexture(),				// 모델의 텍스쳐
-				m_Light->GetDirection(),					// 조명의 방향
-				m_Light->GetAmbientColor(),					// 주변광의 색
-				m_Light->GetDiffuseColor(),					// 조명의 색
-
-				// 반사광
-				m_Camera->GetPosition(),					// 카메라의 위치
-				m_Light->GetSpecularColor(),				// 반사광의 색
-				m_Light->GetSpecularPower());				// 반사광의 강도*/
 			if (!result)
 			{
 				return false;
@@ -476,51 +579,6 @@ bool GraphicsClass::Render(float rotation, int mouseX, int mouseY)
 		}
 	}
 	m_D3D->GetWorldMatrix(worldMatrix);
-	/// 2D 시작
-	// Z버퍼를 끈다
-	m_D3D->TurnZBufferOff();
-	
-	// 알파 블렌딩 켠다
-	m_D3D->TurnOnAlphaBlending();
-	
-	result = m_Bitmap->Render(m_D3D->GetDeviceContext(), mouseX, mouseY);
-	if (!result)
-	{
-		return false;
-	}
-
-	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Bitmap->GetIndexCount(), worldMatrix, baseViewMatrix, orthoMatrix, m_Bitmap->GetTexture());
-	if (!result)
-	{
-		return false;
-	}
-	
-	// 현재 렌더링하고 있는 모델의 수를 출력한다
-	result = m_Text->SetRenderCount(renderCount, m_D3D->GetDeviceContext());
-	if (!result)
-	{
-		return false;
-	}
-
-	// 문장 그린다
-	result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix2D, orthoMatrix);
-	if (!result)
-	{
-		return false;
-	}
-
-	// 알파 블렌딩 끈다
-	m_D3D->TurnOffAlphaBlending();
-
-	// Z버퍼를 켠다
-	m_D3D->TurnZBufferOn();
-	/// 2D 끝
-
-	// ImGui 출력
-	m_ImGui->Render();
-
-	// 버퍼에 그려진 씬을 화면에 표시한다
-	m_D3D->EndScene();
 
 	return true;
 }

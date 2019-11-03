@@ -57,6 +57,12 @@ public:
 	// 렌더타겟뷰 리턴하는 메소드
 	ID3D11RenderTargetView* GetRenderTargetView();
 
+	// 깊이 스텐실 뷰 리턴하는 메소드
+	ID3D11DepthStencilView* GetDepthStencilView();
+
+	// 백버퍼를 현재 렌터타겟으로 설정하는 메소드
+	void SetBackBufferRenderTarget();
+
 private:
 	bool m_vsync_enabled;							// 수직동기화 사용여부
 

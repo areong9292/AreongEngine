@@ -8,6 +8,7 @@
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
 
+class GraphicsClass;
 class ImGuiEditorClass
 {
 public:
@@ -16,13 +17,13 @@ public:
 	~ImGuiEditorClass();
 
 
-	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, ID3D11RenderTargetView* renderTargetView);
+	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, ID3D11RenderTargetView* renderTargetView, GraphicsClass* graphics);
 	void Shutdown();
-	bool Render();
+	bool Render(ID3D11ShaderResourceView* shaderResourceView);
 
 
 private:
-	void DrawDock();
+	void DrawDock(ID3D11ShaderResourceView* shaderResourceView);
 	void CreateDock();
 
 	void DrawHierarchy();
@@ -33,6 +34,8 @@ private:
 	ID3D11Device* m_Device;
 	ID3D11DeviceContext* m_DeviceContext;
 	ID3D11RenderTargetView* m_RenderTargetView;
+
+	GraphicsClass* m_Graphics;
 
 	// imgui state
 	bool show_demo_window = true;

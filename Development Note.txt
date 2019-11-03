@@ -1,0 +1,16 @@
+2019
+
+October
+
+Day
+06. Make Vector234, Matrix
+09. Make Custom SingleTon Class
+10. Make Custom Component Class
+17. Add 3D Rendering Engine (referenced site http://www.rastertek.com/tutindex.html)
+26. Add 'Dear Imgui' to EngineUI, Implement Material & ShaderManager Class to Render Model
+28. Make Engine like Unity(Hierarchy, Inspector) with 'Dear Imgui'
+
+November
+
+Day
+04. Add RenderToTexture & Scene View Rendering

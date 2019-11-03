@@ -11,6 +11,7 @@
 #include "TextClass.h"
 #include "FrustumClass.h"
 #include "ModelListClass.h"
+#include "RenderTextureClass.h"
 
 #include "ImGui/ImGuiEditorClass.h"
 
@@ -35,8 +36,12 @@ public:
 	void Shutdown();
 	bool Frame(int mouseX, int mouseY, float rotationY, bool beginCheck);
 
+	ModelListClass* GetModelList();
+
 private:
-	bool Render(float rotation, int mouseX, int mouseY);
+	bool Render(float rotation);
+	bool RenderToTexture(float rotation);
+	bool RenderScene(float rotation);
 
 	void ModelIntersection(int mouseX, int mouseY);
 	bool RaySphereIntersect(D3DXVECTOR3 rayOrigin, D3DXVECTOR3 raydirection, float radius);
@@ -56,6 +61,8 @@ private:
 	ModelListClass* m_ModelList;
 	FrustumClass* m_Frustum;
 	ModelClass* m_ModelSphere;
+
+	RenderTextureClass* m_RenderTexture;
 
 	ImGuiEditorClass* m_ImGui;
 

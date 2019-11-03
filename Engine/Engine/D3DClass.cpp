@@ -733,3 +733,16 @@ ID3D11RenderTargetView* D3DClass::GetRenderTargetView()
 {
 	return m_renderTargetView;
 }
+
+ID3D11DepthStencilView * D3DClass::GetDepthStencilView()
+{
+	return m_depthStencilView;
+}
+
+void D3DClass::SetBackBufferRenderTarget()
+{
+	// Ãâ·Â ·»´õ¸µ ÆÄÀÌÇÁ¶óÀÎ¿¡ ·»´õ Å¸°Ù ºä¿Í ±íÀÌ ½ºÅÙ½Ç ¹öÆÛ¸¦ ¹ÙÀÎµù
+	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+
+	return;
+}
