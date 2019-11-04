@@ -121,6 +121,24 @@ bool ShaderManager::Render(ModelClass* model, D3DXMATRIX worldMatrix, D3DXMATRIX
 
 		break;
 	case ShaderManager::TEXTURE:
+
+		if (m_TextureShader == nullptr)
+		{
+			m_TextureShader = new TextureShaderClass;
+			if (m_TextureShader == nullptr)
+			{
+				return false;
+			}
+
+			result = m_TextureShader->Initialize(m_Device, m_Hwnd);
+			if (!result)
+			{
+				return false;
+			}
+		}
+
+		result = m_TextureShader->Render(m_DeviceContext, model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, modelMaterial->GetTexture());
+
 		break;
 	case ShaderManager::COLOR:
 		break;
@@ -131,4 +149,26 @@ bool ShaderManager::Render(ModelClass* model, D3DXMATRIX worldMatrix, D3DXMATRIX
 	}
 
 	return true;
+}
+
+char* ShaderManager::GetShaderType(ShaderType shaderType)
+{
+	switch (shaderType)
+	{
+	case ShaderManager::LIGHT:
+		return "LightShader";
+		break;
+	case ShaderManager::TEXTURE:
+		return "TextureShader";
+		break;
+	case ShaderManager::COLOR:
+		return "ColorShader";
+		break;
+	case ShaderManager::FONT:
+		return "FontShader";
+		break;
+	default:
+		break;
+	}
+	return nullptr;
 }

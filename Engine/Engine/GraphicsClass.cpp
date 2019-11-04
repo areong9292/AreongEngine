@@ -229,7 +229,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	result = m_ImGui->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, m_D3D->GetRenderTargetView(), this);
+	result = m_ImGui->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, m_D3D->GetRenderTargetView(), this, m_screenWidth, m_screenHeight);
 	if (!result)
 	{
 		return false;
@@ -547,8 +547,10 @@ bool GraphicsClass::RenderScene(float rotation)
 		if (renderModel)
 		{
 			if (pickedModelIndex != 0 && index == pickedModelIndex - 1)
+			{
 				// Y축 기준으로 회전시킨다
 				D3DXMatrixRotationY(&rotationMatrix, rotation);
+			}
 
 			// 모델의 위치로 월드 행렬 이동
 			D3DXMatrixTranslation(&translateMatrix, positionX, positionY, positionZ);
@@ -558,7 +560,6 @@ bool GraphicsClass::RenderScene(float rotation)
 
 			// 모델의 버텍스, 인덱스 버퍼를 파이프라인에 넣는다
 			m_ModelList->GetModel(index)->Render(m_D3D->GetDeviceContext());
-
 
 			result = m_ShaderManager->Render(m_ModelList->GetModel(index), resultMatrix, viewMatrix, projectionMatrix);
 

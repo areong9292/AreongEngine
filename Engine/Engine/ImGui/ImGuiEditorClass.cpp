@@ -1,5 +1,9 @@
 #include "ImGuiEditorClass.h"
+
 #include "../GraphicsClass.h"
+#include "../Material.h"
+#include "../ModelClass.h"
+#include "../ModelListClass.h"
 
 ImGuiEditorClass::ImGuiEditorClass()
 {
@@ -13,7 +17,7 @@ ImGuiEditorClass::~ImGuiEditorClass()
 {
 }
 
-bool ImGuiEditorClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, ID3D11RenderTargetView* renderTargetView, GraphicsClass* graphics)
+bool ImGuiEditorClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, ID3D11RenderTargetView* renderTargetView, GraphicsClass* graphics, int screenWidth, int screenHeight)
 {
 	// 초기화로 사용한 값 저장
 	m_Device = device;
@@ -21,6 +25,8 @@ bool ImGuiEditorClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* dev
 	m_RenderTargetView = renderTargetView;
 
 	m_Graphics = graphics;
+	m_screenWidth = screenWidth;
+	m_screenHeight = screenHeight;
 
 	// ImGui 초기화
 	IMGUI_CHECKVERSION();
@@ -177,19 +183,19 @@ void ImGuiEditorClass::DrawDock(ID3D11ShaderResourceView* shaderResourceView)
 		// 3. Show another simple window.
 		if (show_another_window)
 		{
-			ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+			ImGui::Begin("Another Window", &show_another_window);
 			ImGui::Text("Hello from another window!");
 			if (ImGui::Button("Close Me"))
 				show_another_window = false;
 			ImGui::End();
 		}
 
+		// 씬 뷰
 		{
-		ImGui::Begin("scene");
-		ImGui::Image((void*)shaderResourceView, ImVec2(512, 512));
-		ImGui::End();
+			ImGui::Begin("scene");
+			ImGui::Image((void*)shaderResourceView, ImVec2(m_screenWidth, m_screenHeight));
+			ImGui::End();
 		}
-
 
 		if (show_hierarchy_window)
 		{
@@ -278,12 +284,12 @@ void ImGuiEditorClass::DrawHierarchy()
 	{
 		// 그래픽 클래스에서 모델 리스트를 읽어온다
 		ModelListClass* modelList = m_Graphics->GetModelList();
-		static int selected = -1;
+		
 		for (int i = 0; i < modelList->GetModelCount(); i++)
 		{
-			if (ImGui::Selectable(modelList->GetModelName(i) + i, selected == i))
+			if (ImGui::Selectable(modelList->GetModelName(i) + i, selectedModel == i))
 			{
-				selected = i;
+				selectedModel = i;
 			}
 		}
 	}
@@ -294,6 +300,44 @@ void ImGuiEditorClass::DrawHierarchy()
 void ImGuiEditorClass::DrawInspector()
 {
 	ImGui::Begin("Inspector", &show_inspector_window);
+
+	// 선택한 모델이 있는 경우
+	if (selectedModel != -1)
+	{
+		// 그래픽 클래스에서 모델 리스트를 읽어와
+		// 선택된 모델을 가져온다
+		i_modelList = m_Graphics->GetModelList();
+		i_model = i_modelList->GetModel(selectedModel);
+
+		// 그 후 모델의 머테리얼을 가져온다
+		i_mat = i_model->GetModelMaterial();
+		
+		// 현재 선택한 모델의 쉐이더를 가져온다
+		char* shaderName = ShaderManager::GetInstance()->GetShaderType(i_mat->GetShaderType());
+
+		// 쉐이더 수만큼 순회하여 스트링 배열을 만든다
+		const char* items[ShaderManager::ShaderTypeCount];
+		for (int i = 0; i < ShaderManager::ShaderTypeCount; i++)
+		{
+			items[i] = ShaderManager::GetInstance()->GetShaderType(ShaderManager::ShaderType(i));
+		}
+
+		static const char* item_current = shaderName;            // Here our selection is a single pointer stored outside the object.
+		if (ImGui::BeginCombo("combo 1", item_current, 0)) // The second parameter is the label previewed before opening the combo.
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+			{
+				// 선택했으면 해당 머테리얼의 쉐이더를 변경한다
+				bool is_selected = (item_current == items[n]);
+				if (ImGui::Selectable(items[n], is_selected))
+				{
+					item_current = items[n];
+					i_mat->SetShaderType(ShaderManager::ShaderType(n));
+				}
+			}
+			ImGui::EndCombo();
+		}
+	}
 
 	ImGui::End();
 }

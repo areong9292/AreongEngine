@@ -9,6 +9,9 @@
 #include "imgui_impl_dx11.h"
 
 class GraphicsClass;
+class ModelListClass;
+class ModelClass;
+class Material;
 class ImGuiEditorClass
 {
 public:
@@ -17,7 +20,7 @@ public:
 	~ImGuiEditorClass();
 
 
-	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, ID3D11RenderTargetView* renderTargetView, GraphicsClass* graphics);
+	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, ID3D11RenderTargetView* renderTargetView, GraphicsClass* graphics, int screenWidth, int screenHeight);
 	void Shutdown();
 	bool Render(ID3D11ShaderResourceView* shaderResourceView);
 
@@ -48,6 +51,17 @@ private:
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	ImGuiID dockspace_id;
+
+	int m_screenWidth;
+	int m_screenHeight;
+
+	int selectedModel= -1;
+
+
+	// 인스펙터용 변수
+	ModelListClass* i_modelList;
+	ModelClass* i_model;
+	Material* i_mat;
 };
 
 #endif // !_IMGUIEDITORCLASS_H_

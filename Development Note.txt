@@ -14,3 +14,4 @@ November
 
 Day
 04. Add RenderToTexture & Scene View Rendering
+04. Scene View resize, Add ShaderChange function in Inspector window

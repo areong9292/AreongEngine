@@ -31,7 +31,8 @@ public:
 		LIGHT,
 		TEXTURE,
 		COLOR,
-		FONT
+		FONT,
+		ShaderTypeCount = 4
 	};
 
 	ShaderManager();
@@ -42,6 +43,7 @@ public:
 	void Shutdown();
 	bool Render(ModelClass* model, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix);
 
+	char* GetShaderType(ShaderType shaderType);
 
 private:
 	// 단순 포인터로 사용
@@ -57,6 +59,9 @@ private:
 	FontShaderClass* m_FontShader;
 	LightShaderClass* m_LightShader;
 	TextureShaderClass* m_TextureShader;
+
+public:
+	int shaderCount = ShaderTypeCount;
 };
 
 #endif // !_SHADERMANAGER_H_
