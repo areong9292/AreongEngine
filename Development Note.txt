@@ -15,3 +15,4 @@ November
 Day
 04. Add RenderToTexture & Scene View Rendering
 04. Scene View resize, Add ShaderChange function in Inspector window
+05. Add FBXSDK, Implement FBXImporter Class and test load .fbx model

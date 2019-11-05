@@ -27,6 +27,7 @@ ModelClass::~ModelClass()
 bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename)
 {
 	bool result;
+	m_Device = device;
 
 	// 모델 데이터를 읽어와서 버텍스, 인덱스 배열을 채운 뒤(LoadModel)
 	// 버텍스, 인덱스 버퍼를 생성한다(InitializeBuffers)
@@ -81,6 +82,43 @@ int ModelClass::GetIndexCount()
 Material * ModelClass::GetModelMaterial()
 {
 	return m_Material->getComponent<Material>();
+}
+
+void ModelClass::test(vector<FBXImporter::MyVertex> test)
+{
+	int count = 0;
+	int countEnd = 0;
+	if (test.size() >= m_vertexCount / 3)
+	{
+		count = m_vertexCount / 3;
+		countEnd = test.size();
+	}
+	else
+	{
+		count = test.size();
+		countEnd = m_vertexCount / 3;
+	}
+	for (int i = 0; i < count; i++)
+	{
+		m_model[i].x = test[i].pos[0];
+		m_model[i].y = test[i].pos[1];
+		m_model[i].z = test[i].pos[2];
+		//fin >> m_model[i].x >> m_model[i].y >> m_model[i].z;
+	}
+	/*for (int i = count; i < countEnd; i++)
+	{
+		m_model[i].x = 0;
+		m_model[i].y = 0;
+		m_model[i].z = 0;
+		//fin >> m_model[i].x >> m_model[i].y >> m_model[i].z;
+	}*/
+
+	// 버텍스 버퍼와 인덱스 버퍼를 초기화한다
+	bool result = InitializeBuffers(m_Device);
+	if (!result)
+	{
+		//return false;
+	}
 }
 
 // 버텍스 버퍼와 인덱스 버퍼를 생성한다

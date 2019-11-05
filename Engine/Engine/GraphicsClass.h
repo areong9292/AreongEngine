@@ -78,6 +78,8 @@ private:
 	GameObject* m_Material;
 
 	ShaderManager* m_ShaderManager;
+
+	vector<FBXImporter::MyVertex>* testVector = new vector<FBXImporter::MyVertex>();
 };
 
 #endif

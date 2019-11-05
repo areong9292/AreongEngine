@@ -141,6 +141,24 @@ bool ShaderManager::Render(ModelClass* model, D3DXMATRIX worldMatrix, D3DXMATRIX
 
 		break;
 	case ShaderManager::COLOR:
+
+		if (m_ColorShader == nullptr)
+		{
+			m_ColorShader = new ColorShaderClass;
+			if (m_ColorShader == nullptr)
+			{
+				return false;
+			}
+
+			result = m_ColorShader->Initialize(m_Device, m_Hwnd);
+			if (!result)
+			{
+				return false;
+			}
+		}
+
+		result = m_ColorShader->Render(m_DeviceContext, model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+
 		break;
 	case ShaderManager::FONT:
 		break;

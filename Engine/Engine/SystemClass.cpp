@@ -318,9 +318,9 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	}
 	else
 	{
-		// 윈도우 모드라면 800x600의 크기를 가지게 합니다.
-		screenWidth = 800;
-		screenHeight = 600;
+		// 윈도우 모드라면 1280x720의 크기를 가지게 합니다.
+		screenWidth = 1280;
+		screenHeight = 720;
 
 		// 창을 모니터의 중앙에 오도록 합니다.
 		posX = (GetSystemMetrics(SM_CXSCREEN) - screenWidth) / 2;

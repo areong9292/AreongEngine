@@ -316,13 +316,13 @@ void ImGuiEditorClass::DrawInspector()
 		char* shaderName = ShaderManager::GetInstance()->GetShaderType(i_mat->GetShaderType());
 
 		// 쉐이더 수만큼 순회하여 스트링 배열을 만든다
-		const char* items[ShaderManager::ShaderTypeCount];
+		char* items[ShaderManager::ShaderTypeCount];
 		for (int i = 0; i < ShaderManager::ShaderTypeCount; i++)
 		{
 			items[i] = ShaderManager::GetInstance()->GetShaderType(ShaderManager::ShaderType(i));
 		}
 
-		static const char* item_current = shaderName;            // Here our selection is a single pointer stored outside the object.
+		char* item_current = shaderName;            // Here our selection is a single pointer stored outside the object.
 		if (ImGui::BeginCombo("combo 1", item_current, 0)) // The second parameter is the label previewed before opening the combo.
 		{
 			for (int n = 0; n < IM_ARRAYSIZE(items); n++)

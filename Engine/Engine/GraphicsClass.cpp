@@ -1,4 +1,5 @@
 #include "GraphicsClass.h"
+#include "FBXImporter.h"
 
 GraphicsClass::GraphicsClass()
 {
@@ -99,12 +100,22 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	// 모델 객체 초기화
 	// 모덱의 이름을 인자로 보내서 모델 데이터를 읽는다
 	// 모델을 그리는데 사용되는 텍스쳐의 이름을 인자로 보낸다
-	result = m_Model->Initialize(m_D3D->GetDevice(), "../Engine/data/Skull.txt", L"../Engine/data/seafloor.dds");
+	result = m_Model->Initialize(m_D3D->GetDevice(), "../Engine/data/model.txt", L"../Engine/data/seafloor.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return false;
 	}
+
+
+	FBXImporter* fbxImporter;
+	fbxImporter = new FBXImporter;
+	if (fbxImporter == nullptr)
+		return 0;
+
+	result = fbxImporter->LoadFBX(testVector);
+
+	m_Model->test(*testVector);
 
 	// 구체 모델 로드
 	m_ModelSphere = new ModelClass;
@@ -366,7 +377,7 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, float rotationY, bool beginChe
 		rotation -= 360.0f;
 	}
 
-	m_Camera->SetPosition(0.0f, 0.0f, -20.0f);
+	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
 
 	// 카메라의 회전 값을 셋팅해서 입력 값에 따라
 	// 카메라를 회전시킨다
@@ -558,14 +569,38 @@ bool GraphicsClass::RenderScene(float rotation)
 			// 최종 월드 행렬 계산 - 스케일 * 회전 * 이동 행렬을 곱해서 원하는 결과를 얻는다
 			resultMatrix = /*scaleMatrix **/ rotationMatrix * translateMatrix;
 
-			// 모델의 버텍스, 인덱스 버퍼를 파이프라인에 넣는다
-			m_ModelList->GetModel(index)->Render(m_D3D->GetDeviceContext());
+			if (index != 0)
+			{
+				// 모델의 버텍스, 인덱스 버퍼를 파이프라인에 넣는다
+				m_ModelList->GetModel(index)->Render(m_D3D->GetDeviceContext());
 
-			result = m_ShaderManager->Render(m_ModelList->GetModel(index), resultMatrix, viewMatrix, projectionMatrix);
+				result = m_ShaderManager->Render(m_ModelList->GetModel(index), resultMatrix, viewMatrix, projectionMatrix);
 
+			}
+			else
+			{
+				result = true;
+			}
 			if (!result)
 			{
 				return false;
+			}
+
+			if (index == 0)
+			{
+				// 모델의 버텍스, 인덱스 버퍼를 파이프라인에 넣는다
+				m_Model->Render(m_D3D->GetDeviceContext());
+
+				// Y축 기준으로 회전시킨다
+				D3DXMatrixRotationY(&rotationMatrix, rotation);
+				// 최종 월드 행렬 계산 - 스케일 * 회전 * 이동 행렬을 곱해서 원하는 결과를 얻는다
+				resultMatrix = /*scaleMatrix **/ rotationMatrix * translateMatrix;
+				result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), resultMatrix, viewMatrix, projectionMatrix, m_Model->GetModelMaterial()->GetTexture());
+
+				if (!result)
+				{
+					return false;
+				}
 			}
 
 			rotationMatrix = worldMatrix;

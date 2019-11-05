@@ -12,6 +12,9 @@ using namespace std;
 #include "Material.h"
 #include "DesignPatternHeader.h"
 
+// FBXimporter
+#include "FBXImporter.h"
+
 // 3D모델들의 복잡한 기하학들을 캡슐화하는 클래스
 class ModelClass
 {
@@ -49,6 +52,8 @@ public:
 
 	Material* GetModelMaterial();
 
+	void test(vector<FBXImporter::MyVertex> test);
+
 private:
 	// 3D 모델의 버텍스 버퍼, 인덱스 버퍼들의 초기화와 종료 과정을 제어
 	bool InitializeBuffers(ID3D11Device*);
@@ -73,6 +78,8 @@ private:
 
 	// 모델의 머테리얼 오브젝트
 	GameObject* m_Material;
+
+	ID3D11Device* m_Device;
 };
 
 #endif
