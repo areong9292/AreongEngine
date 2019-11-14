@@ -1,5 +1,7 @@
 #include "Material.h"
 
+BEGIN_COMPONENT_INIT(Material);
+
 Material::~Material()
 {
 	// 사용한 텍스쳐 객체를 반환한다

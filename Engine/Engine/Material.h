@@ -11,6 +11,8 @@
 
 class Material : public Component
 {
+	BEGIN_COMPONENT_BASE
+
 public:
 	Material(GameObject* gameObject);
 	virtual ~Material();
