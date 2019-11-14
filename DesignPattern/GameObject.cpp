@@ -11,6 +11,11 @@ GameObject::~GameObject()
 	releaseComponents();
 }
 
+list<Component*> GameObject::getComponents()
+{
+	return _components;
+}
+
 void GameObject::releaseComponents()
 {
 	for (auto component : _components)

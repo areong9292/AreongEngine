@@ -17,6 +17,8 @@ public:
 
 	Transform* const transform;
 
+	list<Component*> getComponents();
+
 private:
 	void releaseComponents();
 

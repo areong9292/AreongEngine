@@ -6,6 +6,8 @@
 class Transform : public Component
 {
 public:
+	BEGIN_COMPONENT_BASE
+
 	Transform(GameObject* gameObject);
 	virtual ~Transform();
 
