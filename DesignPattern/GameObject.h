@@ -10,6 +10,7 @@ class GameObject
 {
 public:
 	GameObject();
+	GameObject(const char* name);
 	~GameObject();
 
 	template <typename T> T* getComponent();
@@ -19,11 +20,15 @@ public:
 
 	list<Component*> getComponents();
 
+	const char* getName();
+
 private:
+	void deleteTransforms();
 	void releaseComponents();
 
 private:
 	list<Component*> _components;
+	const char* _name;
 };
 
 #endif // !GAMEOBJECT_H_
