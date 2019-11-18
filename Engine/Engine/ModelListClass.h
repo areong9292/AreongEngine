@@ -9,6 +9,8 @@
 #include <time.h>
 #include <fstream>
 
+#include <string>
+
 using namespace std;
 
 // 한 장면의 모든 모델들에 대한 정보를 유지, 관리하는 클래스
@@ -61,6 +63,8 @@ private:
 	ModelInfoType* m_ModelInfoList;
 
 	wchar_t* ConverCtoWC(char* str);
+
+	string modelName = "";
 };
 
 #endif // !_MODELLISTCLASS_H_

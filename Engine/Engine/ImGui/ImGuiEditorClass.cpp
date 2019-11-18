@@ -4,6 +4,12 @@
 #include "../Material.h"
 #include "../ModelClass.h"
 #include "../ModelListClass.h"
+#include "../../../DesignPattern/Transform.h"
+#include "../../../DesignPattern/Component.h"
+
+
+#include "DrawInspector.h"
+
 
 ImGuiEditorClass::ImGuiEditorClass()
 {
@@ -204,7 +210,7 @@ void ImGuiEditorClass::DrawDock(ID3D11ShaderResourceView* shaderResourceView)
 
 		if (show_inspector_window)
 		{
-			DrawInspector();
+			DrawInspect();
 		}
 
 
@@ -280,6 +286,7 @@ void ImGuiEditorClass::DrawHierarchy()
 {
 	ImGui::Begin("Hierarchy", &show_hierarchy_window);
 
+	/*
 	if (m_Graphics != nullptr)
 	{
 		// 그래픽 클래스에서 모델 리스트를 읽어온다
@@ -293,11 +300,57 @@ void ImGuiEditorClass::DrawHierarchy()
 			}
 		}
 	}
+	*/
+
+	// 루트를 그리면 하위 자식도 다 그려진다
+	DrawTransform(Transform::Root);
 
 	ImGui::End();
 }
 
-void ImGuiEditorClass::DrawInspector()
+void ImGuiEditorClass::DrawTransform(Transform * transform)
+{
+	ImGuiTreeNodeFlags flags = 0;
+	flags |= ImGuiTreeNodeFlags_OpenOnArrow;
+	flags |= ImGuiTreeNodeFlags_AllowItemOverlap;
+
+	// 하단에 자식이 없을 경우 화살표 출력 안해줌
+	if (transform->getChildCount() == 0)
+	{
+		flags |= ImGuiTreeNodeFlags_Leaf;
+	}
+
+	// 화살표 만든다
+	ImGui::PushID((size_t)transform);
+	auto nodeId = ImGui::GetID("##w");
+	bool nodeOpend = ImGui::TreeNodeEx("##w", flags);
+
+	// 현재 선택했는지 여부 저장용 변수
+	bool selected = transform == selectedItem;
+
+	// 화살표와 같은 라인에 선택 가능 오브젝트 추가
+	ImGui::SameLine();
+	if (ImGui::Selectable(transform->gameObject->getName(), &selected))
+	{
+		selectedItem = transform;
+	}
+
+	// 화살표를 선택했을 경우
+	if (nodeOpend)
+	{
+		// 해당 오브젝트의 트랜스폼 자식들을 그려준다
+		ImGui::GetStateStorage()->SetInt(nodeId, 1);
+		for (int i = 0; i < transform->getChildCount(); i++)
+		{
+			DrawTransform(transform->getChild(i));
+		}
+		ImGui::TreePop();
+	}
+	
+	ImGui::PopID();
+}
+
+void ImGuiEditorClass::DrawInspect()
 {
 	ImGui::Begin("Inspector", &show_inspector_window);
 
@@ -323,7 +376,7 @@ void ImGuiEditorClass::DrawInspector()
 		}
 
 		char* item_current = shaderName;            // Here our selection is a single pointer stored outside the object.
-		if (ImGui::BeginCombo("combo 1", item_current, 0)) // The second parameter is the label previewed before opening the combo.
+		if (ImGui::BeginCombo("ShaderType", item_current, 0)) // The second parameter is the label previewed before opening the combo.
 		{
 			for (int n = 0; n < IM_ARRAYSIZE(items); n++)
 			{
@@ -337,6 +390,27 @@ void ImGuiEditorClass::DrawInspector()
 			}
 			ImGui::EndCombo();
 		}
+	}
+
+	// 선택한 게임 오브젝트 트랜스폼이 있을 경우
+	if (selectedItem != nullptr)
+	{
+		// 컴포넌트의 타입에 따라 인스펙터에 처리해준다
+		if (drawInspector == nullptr)
+			drawInspector = new DrawInspector();
+
+		// 선택한 오브젝트의 모든 컴포넌트를 그려준다
+		for (auto component : selectedItem->gameObject->getComponents())
+		{
+			drawInspector->DrawComponent(component);
+		}
+
+		// 컴포넌트 추가기능
+		ImGui::Separator();
+		if (ImGui::Button("Add Component"))
+		{
+		}
+
 	}
 
 	ImGui::End();

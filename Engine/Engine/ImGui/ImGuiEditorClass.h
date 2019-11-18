@@ -2,6 +2,10 @@
 #define _IMGUIEDITORCLASS_H_
 
 #include <d3d11.h>
+#include <map>
+#include <string>
+
+using namespace std;
 
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -12,6 +16,8 @@ class GraphicsClass;
 class ModelListClass;
 class ModelClass;
 class Material;
+class Transform;
+class DrawInspector;
 class ImGuiEditorClass
 {
 public:
@@ -19,18 +25,18 @@ public:
 	ImGuiEditorClass(const ImGuiEditorClass&);
 	~ImGuiEditorClass();
 
-
 	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, ID3D11RenderTargetView* renderTargetView, GraphicsClass* graphics, int screenWidth, int screenHeight);
 	void Shutdown();
 	bool Render(ID3D11ShaderResourceView* shaderResourceView);
-
 
 private:
 	void DrawDock(ID3D11ShaderResourceView* shaderResourceView);
 	void CreateDock();
 
 	void DrawHierarchy();
-	void DrawInspector();
+	void DrawTransform(Transform* transform);
+
+	void DrawInspect();
 
 	void HelpMarker(const char* desc);
 
@@ -62,6 +68,11 @@ private:
 	ModelListClass* i_modelList;
 	ModelClass* i_model;
 	Material* i_mat;
+
+	// 현재 어떤 게임 오브젝트를 눌렀는지
+	Transform* selectedItem;
+
+	DrawInspector* drawInspector;
 };
 
 #endif // !_IMGUIEDITORCLASS_H_

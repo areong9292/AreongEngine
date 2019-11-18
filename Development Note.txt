@@ -16,3 +16,8 @@ Day
 04. Add RenderToTexture & Scene View Rendering
 04. Scene View resize, Add ShaderChange function in Inspector window
 05. Add FBXSDK, Implement FBXImporter Class and test load .fbx model
+05. Add Comment FBXImporter
+14. [Design Pattern] Add Macro in Component Class to get GameObject's components type name & test
+14. Add Component Macro in Material Class
+16. [Design Pattern] Implement parent - child relation in Transform, GameObject
+18. Draw parent - child relation in Hierarchy Window, & control GameObject's components in Inspector Window

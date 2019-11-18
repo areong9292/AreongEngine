@@ -80,6 +80,13 @@ private:
 	ShaderManager* m_ShaderManager;
 
 	vector<FBXImporter::MyVertex>* testVector = new vector<FBXImporter::MyVertex>();
+
+	// transform °èÃþ Å×½ºÆ®
+	GameObject* obj = nullptr;
+	GameObject* obj1 = nullptr;
+	GameObject* obj2 = nullptr;
+	GameObject* obj3 = nullptr;
+
 };
 
 #endif

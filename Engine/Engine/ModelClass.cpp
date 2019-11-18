@@ -44,7 +44,7 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 		return false;
 	}
 
-	m_Material = new GameObject();
+	m_Material = new GameObject(modelFilename);
 	m_Material->addComponent<Material>();
 
 	result = m_Material->getComponent<Material>()->LoadTexture(device);

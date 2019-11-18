@@ -1,6 +1,7 @@
 #ifndef GAMEOBJECT_H_
 
 #include <list>
+#include <string>
 
 #include "Transform.h"
 using namespace std;
@@ -11,6 +12,7 @@ class GameObject
 public:
 	GameObject();
 	GameObject(const char* name);
+	GameObject(string name);
 	~GameObject();
 
 	template <typename T> T* getComponent();

@@ -198,9 +198,12 @@ bool ModelListClass::Initialize(D3DClass* m_D3D)
 		}
 		WCHAR* lTexturePath = ConverCtoWC(m_ModelInfoList[i].textureFilePath);
 
+		modelName = "model" + (i + 1);
+
 		result = m_ModelInfoList[i].m_model->Initialize(m_D3D->GetDevice(),					// device 객체
 														m_ModelInfoList[i].modelFilePath,	// 모델 파일 경로
 														lTexturePath);						// 해당 모델에 입힐 텍스쳐 경로
+													
 		if (!result)
 		{
 			return false;

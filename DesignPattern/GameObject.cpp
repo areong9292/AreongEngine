@@ -11,6 +11,11 @@ GameObject::GameObject(const char* name) : transform(new Transform(this)), _name
 	_components.push_back(transform);
 }
 
+GameObject::GameObject(string name) : transform(new Transform(this)), _name(name.c_str())
+{
+	_components.push_back(transform);
+}
+
 GameObject::~GameObject()
 {
 	deleteTransforms();

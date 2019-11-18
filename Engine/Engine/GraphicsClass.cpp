@@ -22,6 +22,16 @@ GraphicsClass::GraphicsClass()
 
 	m_Material = nullptr;
 	m_ShaderManager = nullptr;
+
+	GameObject* obj = new GameObject("obj");
+	GameObject* obj1 = new GameObject("obj1");
+	GameObject* obj2 = new GameObject("obj2");
+	GameObject* obj3 = new GameObject("obj3");
+
+
+	obj->transform->addChild(obj1->transform);
+	obj1->transform->addChild(obj2->transform);
+	obj2->transform->addChild(obj3->transform);
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
@@ -97,6 +107,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	/*
 	// 모델 객체 초기화
 	// 모덱의 이름을 인자로 보내서 모델 데이터를 읽는다
 	// 모델을 그리는데 사용되는 텍스쳐의 이름을 인자로 보낸다
@@ -116,7 +127,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	result = fbxImporter->LoadFBX(testVector);
 
 	m_Model->test(*testVector);
-
+	*/
+	/*
 	// 구체 모델 로드
 	m_ModelSphere = new ModelClass;
 	if (m_ModelSphere == nullptr)
@@ -129,7 +141,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	{
 		MessageBox(hwnd, L"Could not initialize the sphere model object.", L"Error", MB_OK);
 		return false;
-	}
+	}*/
 	
 	// 조명 쉐이더 객체 생성
 	m_LightShader = new LightShaderClass;
@@ -264,6 +276,15 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 // 모든 그래픽 객체의 해제가 일어난다
 void GraphicsClass::Shutdown()
 {
+	if(obj != nullptr)
+		delete obj;
+	if (obj1 != nullptr)
+		delete obj1;
+	if (obj2 != nullptr)
+		delete obj2;
+	if (obj3 != nullptr)
+		delete obj3;
+
 	// Cleanup
 	if (m_Material != nullptr)
 	{
@@ -377,7 +398,7 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, float rotationY, bool beginChe
 		rotation -= 360.0f;
 	}
 
-	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+	m_Camera->SetPosition(0.0f, 0.0f, -20.0f);
 
 	// 카메라의 회전 값을 셋팅해서 입력 값에 따라
 	// 카메라를 회전시킨다
@@ -569,7 +590,7 @@ bool GraphicsClass::RenderScene(float rotation)
 			// 최종 월드 행렬 계산 - 스케일 * 회전 * 이동 행렬을 곱해서 원하는 결과를 얻는다
 			resultMatrix = /*scaleMatrix **/ rotationMatrix * translateMatrix;
 
-			if (index != 0)
+			if (true)
 			{
 				// 모델의 버텍스, 인덱스 버퍼를 파이프라인에 넣는다
 				m_ModelList->GetModel(index)->Render(m_D3D->GetDeviceContext());
@@ -586,7 +607,7 @@ bool GraphicsClass::RenderScene(float rotation)
 				return false;
 			}
 
-			if (index == 0)
+			/*if (index == 0)
 			{
 				// 모델의 버텍스, 인덱스 버퍼를 파이프라인에 넣는다
 				m_Model->Render(m_D3D->GetDeviceContext());
@@ -594,14 +615,14 @@ bool GraphicsClass::RenderScene(float rotation)
 				// Y축 기준으로 회전시킨다
 				D3DXMatrixRotationY(&rotationMatrix, rotation);
 				// 최종 월드 행렬 계산 - 스케일 * 회전 * 이동 행렬을 곱해서 원하는 결과를 얻는다
-				resultMatrix = /*scaleMatrix **/ rotationMatrix * translateMatrix;
+				resultMatrix = /*scaleMatrix **//* rotationMatrix * translateMatrix;
 				result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), resultMatrix, viewMatrix, projectionMatrix, m_Model->GetModelMaterial()->GetTexture());
 
 				if (!result)
 				{
 					return false;
 				}
-			}
+			}*/
 
 			rotationMatrix = worldMatrix;
 			translateMatrix = worldMatrix;
