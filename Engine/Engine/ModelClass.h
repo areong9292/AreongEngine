@@ -2,11 +2,10 @@
 #define _MODELCLASS_H_
 
 #include <d3d11.h>
-#include <d3dx10math.h>
+#include <DirectXMath.h>
 
 // 텍스트 파일(모델 파일)을 읽기 위한 include
 #include <fstream>
-using namespace std;
 
 // 모델의 머테리얼
 #include "Material.h"
@@ -14,6 +13,9 @@ using namespace std;
 
 // FBXimporter
 #include "FBXImporter.h"
+
+using namespace std;
+using namespace DirectX;
 
 // 3D모델들의 복잡한 기하학들을 캡슐화하는 클래스
 class ModelClass
@@ -23,9 +25,9 @@ private:
 	// 버텍스 쉐이더의 입력과 형태가 같아야한다
 	struct VertexType
 	{
-		D3DXVECTOR3 position;
-		D3DXVECTOR2 texture;	// 텍스쳐를 입힐 것이다
-		D3DXVECTOR3 normal;		// 조명 지원을 위한 법선 벡터 추가
+		XMFLOAT3 position;
+		XMFLOAT2 texture;	// 텍스쳐를 입힐 것이다
+		XMFLOAT3 normal;	// 조명 지원을 위한 법선 벡터 추가
 	};
 
 	// 모델 포맷 구조체

@@ -4,19 +4,21 @@
 // 객체 모듈을 사용하기 위해 링크하는 라이브러리들 명시
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "d3dx11.lib")
+//#pragma comment(lib, "d3dx11.lib")
 
 // 다렉 10꺼도 로드하는데 11되도 안바뀌는 기능이 있어서 사용함
-#pragma comment(lib, "d3dx10.lib")
+//#pragma comment(lib, "d3dx10.lib")
 
 // 링크한 라이브러리들, DirectX타입 정의와 같은 것들에 대한 헤더 추가
 #include <dxgi.h>
 #include <d3dcommon.h>
 #include <d3d11.h>
-#include <d3dx10math.h>
+#include <DirectXMath.h>
 
 #include <iostream>
 #include <fstream>
+
+using namespace DirectX;
 
 // Direct3D 기능들을 다루는 클래스
 class D3DClass
@@ -40,9 +42,9 @@ public:
 	ID3D11DeviceContext* GetDeviceContext();
 
 	/// 행렬들 구하는 메소드
-	void GetProjectionMatrix(D3DXMATRIX&);
-	void GetWorldMatrix(D3DXMATRIX&);
-	void GetOrthoMatrix(D3DXMATRIX&);
+	void GetProjectionMatrix(XMMATRIX&);
+	void GetWorldMatrix(XMMATRIX&);
+	void GetOrthoMatrix(XMMATRIX&);
 
 	void GetVideoCardInfo(char*, int&);
 
@@ -82,9 +84,9 @@ private:
 
 	ID3D11RasterizerState* m_rasterState;			// 레스터화기 상태
 
-	D3DXMATRIX m_projectionMatrix;					// 투영행렬
-	D3DXMATRIX m_worldMatrix;						// 월드행렬
-	D3DXMATRIX m_orthoMatrix;						// 직교투영행렬
+	XMMATRIX m_projectionMatrix;					// 투영행렬
+	XMMATRIX m_worldMatrix;							// 월드행렬
+	XMMATRIX m_orthoMatrix;							// 직교투영행렬
 
 	// 뷰 행렬은 카메라 클래스에 있다
 

@@ -70,7 +70,7 @@ void ShaderManager::Shutdown()
 }
 
 
-bool ShaderManager::Render(ModelClass* model, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix)
+bool ShaderManager::Render(ModelClass* model, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
 {
 	if (model == nullptr)
 	{

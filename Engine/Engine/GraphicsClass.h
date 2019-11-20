@@ -44,7 +44,7 @@ private:
 	bool RenderScene(float rotation);
 
 	void ModelIntersection(int mouseX, int mouseY);
-	bool RaySphereIntersect(D3DXVECTOR3 rayOrigin, D3DXVECTOR3 raydirection, float radius);
+	bool RaySphereIntersect(XMFLOAT3 rayOrigin, XMFLOAT3 raydirection, float radius);
 
 private:
 	D3DClass* m_D3D;
@@ -73,7 +73,7 @@ private:
 
 	int pickedModelIndex = 0;
 
-	D3DXMATRIX baseViewMatrix;
+	XMMATRIX baseViewMatrix;
 
 	GameObject* m_Material;
 

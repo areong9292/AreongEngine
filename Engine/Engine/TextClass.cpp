@@ -1,7 +1,5 @@
 #include "TextClass.h"
 
-
-
 TextClass::TextClass()
 {
 	m_Font = nullptr;
@@ -21,7 +19,7 @@ TextClass::~TextClass()
 }
 
 // 텍스트 클래스 초기화
-bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, int screenWidth, int screenHeight, D3DXMATRIX baseViewMatrix)
+bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, int screenWidth, int screenHeight, XMMATRIX baseViewMatrix)
 {
 	bool result;
 
@@ -113,7 +111,7 @@ void TextClass::Shutdown()
 }
 
 // 문장을 화면에 그린다
-bool TextClass::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX orthoMatrix)
+bool TextClass::Render(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX orthoMatrix)
 {
 	bool result;
 
@@ -434,10 +432,10 @@ void TextClass::ReleaseSentence(SentenceType** sentence)
 
 // 버텍스, 인덱스 버퍼를 입력 어셈블러에 넣고 쉐이더를 호출하여
 // 입력된 버퍼들을 그리게 한다
-bool TextClass::RenderSentence(ID3D11DeviceContext* deviceContext, SentenceType* sentence, D3DXMATRIX worldMatrix, D3DXMATRIX orthoMatirx)
+bool TextClass::RenderSentence(ID3D11DeviceContext* deviceContext, SentenceType* sentence, XMMATRIX worldMatrix, XMMATRIX orthoMatirx)
 {
 	unsigned int stride, offset;
-	D3DXVECTOR4 pixelColor;
+	XMFLOAT4 pixelColor;
 	bool result;
 
 	stride = sizeof(VertexType);
@@ -453,7 +451,7 @@ bool TextClass::RenderSentence(ID3D11DeviceContext* deviceContext, SentenceType*
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// 픽셀의 색상을 문자열 정보를 가지고 생성한다
-	pixelColor = D3DXVECTOR4(sentence->red, sentence->green, sentence->blue, 1.0f);
+	pixelColor = XMFLOAT4(sentence->red, sentence->green, sentence->blue, 1.0f);
 
 	// 폰트 쉐이더로 문장을 렌더링한다
 	// 그릴 때 현재의 뷰포트가 아닌 초기화 때 저장한 초기 카메라의 뷰포트(m_baseViewMatrix)에 그린다

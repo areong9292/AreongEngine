@@ -2,9 +2,11 @@
 #define _BITMAPCLASS_H_
 
 #include <d3d11.h>
-#include <d3dx10math.h>
+#include <DirectXMath.h>
 
 #include "TextureClass.h"
+
+using namespace DirectX;
 
 // 화면에 그리는데 필요한 각 이미지를 표현하는 클래스
 // 모든 2D이미지에 대해 BitmapClass를 만들어야한다
@@ -16,8 +18,8 @@ private:
 	// 텍스쳐 좌표(텍스쳐 어느 부분을 씌울건지)만 있으면 된다
 	struct  VertexType
 	{
-		D3DXVECTOR3 position;
-		D3DXVECTOR2 texture;
+		XMFLOAT3 position;
+		XMFLOAT2 texture;
 	};
 public:
 	BitmapClass();

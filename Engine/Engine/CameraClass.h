@@ -1,7 +1,8 @@
 #ifndef  _CAMERACLASS_H_
 #define _CAMERACLASS_H_
 
-#include <d3dx10math.h>
+#include <DirectXMath.h>
+using namespace DirectX;
 
 class CameraClass
 {
@@ -14,20 +15,20 @@ public:
 	void SetPosition(float x, float y, float z);
 	void SetRotation(float x, float y, float z);
 
-	D3DXVECTOR3 GetPosition();
-	D3DXVECTOR3 GetRotation();
+	XMFLOAT3 GetPosition();
+	XMFLOAT3 GetRotation();
 
 	// 카메라의 위치와 회전 상태에 기반한 뷰 행렬을 생성
 	void Render();
 
 	// 쉐이더에서 렌더링에 사용할 수 있도록
 	// 카메라 뷰 행렬 반환
-	void GetViewMatrix(D3DXMATRIX& viewMatrix);
+	void GetViewMatrix(XMMATRIX& viewMatrix);
 
 private:
 	float m_positionX, m_positionY, m_positionZ;
 	float m_rotationX, m_rotationY, m_rotationZ;
-	D3DXMATRIX m_viewMatrix;
+	XMMATRIX m_viewMatrix;
 };
 
 #endif

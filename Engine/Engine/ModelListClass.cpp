@@ -93,7 +93,7 @@ bool ModelListClass::Initialize(D3DClass* m_D3D)
 							}
 
 							// 파일에서 받은 컬러 정보 저장
-							m_ModelInfoList[index].color = D3DXVECTOR4(red, green, blue, 1.0f);
+							m_ModelInfoList[index].color = XMFLOAT4(red, green, blue, 1.0f);
 						}
 					}
 					else if (strstr(tok1, "position"))
@@ -247,7 +247,7 @@ int ModelListClass::GetModelCount()
 }
 
 // 인덱스로 모델의 위치와 색상을 가져온다
-void ModelListClass::GetData(int index, float& positionX, float& positionY, float& positionZ, D3DXVECTOR4& color)
+void ModelListClass::GetData(int index, float& positionX, float& positionY, float& positionZ, XMFLOAT4& color)
 {
 	positionX = m_ModelInfoList[index].positionX;
 	positionY = m_ModelInfoList[index].positionY;

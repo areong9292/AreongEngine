@@ -392,7 +392,7 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, float rotationY, bool beginChe
 	// 계속 회전한다
 	static float rotation = 0.0f;
 
-	rotation += (float)D3DX_PI * 0.005f;
+	rotation += (float)XM_PI * 0.005f;
 	if (rotation > 360.0f)
 	{
 		rotation -= 360.0f;
@@ -520,24 +520,24 @@ bool GraphicsClass::RenderToTexture(float rotation)
 
 bool GraphicsClass::RenderScene(float rotation)
 {
-	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
-	D3DXMATRIX  scaleMatrix, worldMatrix2D;
+	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
+	XMMATRIX scaleMatrix, worldMatrix2D;
 	bool result;
 
 	// 행렬 총 조합 SRT - 스자이(스케일, 자전, 이동) 순으로 곱해야한다
-	D3DXMATRIX rotationMatrix;
-	D3DXMATRIX translateMatrix;
-	D3DXMATRIX resultMatrix;
+	XMMATRIX rotationMatrix;
+	XMMATRIX translateMatrix;
+	XMMATRIX resultMatrix;
 
 	int modelCount, renderCount, index;
 	float positionX, positionY, positionZ, radius;
-	D3DXVECTOR4 color;
+	XMFLOAT4 color;
 	bool renderModel;
 
 	// scaleMatrix을 스케일 변환 행렬 그 자체로 만든다
 	// 이런 식으로 행렬 만들고 월드 행렬에 곱해주면 스케일 변환이 완료된다
-	D3DXMatrixIdentity(&scaleMatrix);
-	D3DXMatrixScaling(&scaleMatrix, 5.0f, 5.0f, 5.0f);
+	scaleMatrix = XMMatrixIdentity();
+	scaleMatrix = XMMatrixScaling(5.0f, 5.0f, 5.0f);
 
 	// 화면을 검은색으로 초기화
 	// 씬 그리기를 시작하기 위해 버퍼의 내용을 한가지 색으로 덮어씌워서 지운다
@@ -581,11 +581,11 @@ bool GraphicsClass::RenderScene(float rotation)
 			if (pickedModelIndex != 0 && index == pickedModelIndex - 1)
 			{
 				// Y축 기준으로 회전시킨다
-				D3DXMatrixRotationY(&rotationMatrix, rotation);
+				rotationMatrix = XMMatrixRotationY(rotation);
 			}
 
 			// 모델의 위치로 월드 행렬 이동
-			D3DXMatrixTranslation(&translateMatrix, positionX, positionY, positionZ);
+			translateMatrix = XMMatrixTranslation(positionX, positionY, positionZ);
 
 			// 최종 월드 행렬 계산 - 스케일 * 회전 * 이동 행렬을 곱해서 원하는 결과를 얻는다
 			resultMatrix = /*scaleMatrix **/ rotationMatrix * translateMatrix;
@@ -642,8 +642,8 @@ bool GraphicsClass::RenderScene(float rotation)
 
 void GraphicsClass::ModelIntersection(int mouseX, int mouseY)
 {
-	D3DXMATRIX projectionMatrix, viewMatrix, inverseViewMatrix, worldMatrix, translateMatrix, inverseWorldMatrix;
-	D3DXVECTOR3 direction, origin, rayOrigin, rayDirection;
+	XMMATRIX projectionMatrix, viewMatrix, inverseViewMatrix, worldMatrix, translateMatrix, inverseWorldMatrix;
+	XMFLOAT3 direction, origin, rayOrigin, rayDirection;
 	bool intersect, result;
 
 	float pointX, pointY;
@@ -651,7 +651,7 @@ void GraphicsClass::ModelIntersection(int mouseX, int mouseY)
 	int modelCount = m_ModelList->GetModelCount();
 
 	float positionX, positionY, positionZ;
-	D3DXVECTOR4 color;
+	XMFLOAT4 color;
 
 	pickedModelIndex = 0;
 
@@ -661,17 +661,24 @@ void GraphicsClass::ModelIntersection(int mouseX, int mouseY)
 
 	// 투영행렬을 사용하여 화면 비율에 맞춤
 	m_D3D->GetProjectionMatrix(projectionMatrix);
-	pointX = pointX / projectionMatrix._11;
-	pointY = pointY / projectionMatrix._22;
+
+	XMFLOAT3X3 projectionMatrix4;
+	XMStoreFloat3x3(&projectionMatrix4, projectionMatrix);
+
+	pointX = pointX / projectionMatrix4._11;
+	pointY = pointY / projectionMatrix4._22;
 
 	// 역 뷰행렬 구함
 	m_Camera->GetViewMatrix(viewMatrix);
-	D3DXMatrixInverse(&inverseViewMatrix, NULL, &viewMatrix);
+	inverseViewMatrix = XMMatrixInverse(nullptr, viewMatrix);
+
+	XMFLOAT3X3 inverseViewMatrix4;
+	XMStoreFloat3x3(& inverseViewMatrix4, inverseViewMatrix);
 
 	// 뷰 공간에서 피킹 레이의 방향을 계산한다
-	direction.x = (pointX * inverseViewMatrix._11) + (pointY * inverseViewMatrix._21) + inverseViewMatrix._31;
-	direction.y = (pointX * inverseViewMatrix._12) + (pointY * inverseViewMatrix._22) + inverseViewMatrix._32;
-	direction.z = (pointX * inverseViewMatrix._13) + (pointY * inverseViewMatrix._23) + inverseViewMatrix._33;
+	direction.x = (pointX * inverseViewMatrix4._11) + (pointY * inverseViewMatrix4._21) + inverseViewMatrix4._31;
+	direction.y = (pointX * inverseViewMatrix4._12) + (pointY * inverseViewMatrix4._22) + inverseViewMatrix4._32;
+	direction.z = (pointX * inverseViewMatrix4._13) + (pointY * inverseViewMatrix4._23) + inverseViewMatrix4._33;
 
 	// 카메라의 위치 인 picking ray의 원점을 가져옵니다.
 	origin = m_Camera->GetPosition();
@@ -685,18 +692,18 @@ void GraphicsClass::ModelIntersection(int mouseX, int mouseY)
 
 		// 이동 변환
 		m_D3D->GetWorldMatrix(worldMatrix);
-		D3DXMatrixTranslation(&translateMatrix, positionX, positionY, positionZ);
-		D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &translateMatrix);
+		translateMatrix = XMMatrixTranslation(positionX, positionY, positionZ);
+		worldMatrix = XMMatrixMultiply(worldMatrix, translateMatrix);
 
 		// 이동 변환 완료된 월드 행렬의 역을 가져온다
-		D3DXMatrixInverse(&inverseWorldMatrix, NULL, &worldMatrix);
+		inverseWorldMatrix = XMMatrixInverse(nullptr, worldMatrix);
 
 		// 뷰 공간에서 월드 공간으로 전환한다
-		D3DXVec3TransformCoord(&rayOrigin, &origin, &inverseWorldMatrix);
-		D3DXVec3TransformNormal(&rayDirection, &direction, &inverseWorldMatrix);
+		XMStoreFloat3(&rayOrigin, XMVector3TransformCoord(XMVectorSet(origin.x, origin.y, origin.z, 0.0f), inverseWorldMatrix));
+		XMStoreFloat3(&direction, XMVector3TransformNormal(XMVectorSet(direction.x, direction.y, direction.z, 0.0f), inverseWorldMatrix));
 
 		// 레이 방향벡터를 정규화한다
-		D3DXVec3Normalize(&rayDirection, &rayDirection);
+		XMStoreFloat3(&rayDirection, XMVector3Normalize(XMVectorSet(direction.x, direction.y, direction.z, 0.0f)));
 
 		// 교차 테스트로 피킹 됬는지 여부 판단한다
 		intersect = RaySphereIntersect(rayOrigin, rayDirection, 1.0f);
@@ -718,7 +725,7 @@ void GraphicsClass::ModelIntersection(int mouseX, int mouseY)
 	return;
 }
 
-bool GraphicsClass::RaySphereIntersect(D3DXVECTOR3 rayOrigin, D3DXVECTOR3 rayDirection, float radius)
+bool GraphicsClass::RaySphereIntersect(XMFLOAT3 rayOrigin, XMFLOAT3 rayDirection, float radius)
 {
 	float a, b, c, discriminant;
 	a = (rayDirection.x * rayDirection.x) + (rayDirection.y * rayDirection.y) + (rayDirection.z * rayDirection.z);

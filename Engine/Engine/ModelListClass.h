@@ -4,7 +4,7 @@
 #include "ModelClass.h"
 #include "d3dclass.h"
 
-#include <d3dx10math.h>
+#include <DirectXMath.h>
 #include <stdlib.h>
 #include <time.h>
 #include <fstream>
@@ -12,6 +12,7 @@
 #include <string>
 
 using namespace std;
+using namespace DirectX;
 
 // 한 장면의 모든 모델들에 대한 정보를 유지, 관리하는 클래스
 class ModelListClass
@@ -37,7 +38,7 @@ private:
 	// 모델의 색상과 좌표 저장용 구조체
 	struct ModelInfoType
 	{
-		D3DXVECTOR4 color;
+		XMFLOAT4 color;
 		float positionX, positionY, positionZ;
 		char* modelFilePath;
 		char* textureFilePath;
@@ -54,7 +55,7 @@ public:
 	void Shutdown();
 
 	int GetModelCount();
-	void GetData(int index, float& positionX, float& positionY, float& positionZ, D3DXVECTOR4& color);
+	void GetData(int index, float& positionX, float& positionY, float& positionZ, XMFLOAT4& color);
 	ModelClass* GetModel(int index);
 	char* GetModelName(int index);
 

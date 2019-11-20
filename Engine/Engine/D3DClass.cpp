@@ -450,22 +450,22 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	/// 투영 행렬 - 3D화면을 앞서 만든 2D뷰포트 공간으로 변환
 	// 투영 행렬을 설정
-	fieldOfView = (float)D3DX_PI / 4.0f;
+	fieldOfView = (float)XM_PI / 4.0f;
 	screenAspect = (float)screenWidth / (float)screenHeight;
 
 	// 3D 렌더링을 위한 투영 행렬을 생성
-	D3DXMatrixPerspectiveFovLH(&m_projectionMatrix, fieldOfView, screenAspect, screenNear, screenDepth);
+	m_projectionMatrix = XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);
 
 	/// 월드 행렬 - 오브젝트들의 좌표를 3D세계의 좌표로 변환, 3차원 공간에서의 회전/이동/크기 변환에도 사용
 	// 월드 행렬을 단위 행렬로 초기화
-	D3DXMatrixIdentity(&m_worldMatrix);
+	m_worldMatrix = XMMatrixIdentity();
 
 	/// 뷰 행렬 - 현재 장면에서 우리가 어느 위치에서 어느 방향을 보고 있는가를 계산
 	/// 카메라에 대한 행렬로 이후 카메라 클래스에서 생성
 
 	/// 직교 투영 행렬 - UI와 같은 2D의 요소들을 그리기 위해 사용
 	// 2D 렌더링에 사용될 직교 투영 행렬을 생성
-	D3DXMatrixOrthoLH(&m_orthoMatrix, (float)screenWidth, (float)screenHeight, screenNear, screenDepth);
+	m_orthoMatrix = XMMatrixOrthographicLH((float)screenWidth, (float)screenHeight, screenNear, screenDepth);
 
 	// 2d용 깊이-스텐실 desc를 작성한다
 	ZeroMemory(&depthDisabledStencilDesc, sizeof(depthDisabledStencilDesc));
@@ -655,21 +655,21 @@ ID3D11DeviceContext * D3DClass::GetDeviceContext()
 
 /// 대부분의 쉐이더에선 투영, 월드, 직교투영 행렬이 필요하다
 // 투영행렬 반환
-void D3DClass::GetProjectionMatrix(D3DXMATRIX& projectionMatrix)
+void D3DClass::GetProjectionMatrix(XMMATRIX& projectionMatrix)
 {
 	projectionMatrix = m_projectionMatrix;
 	return;
 }
 
 // 월드행렬 반환
-void D3DClass::GetWorldMatrix(D3DXMATRIX& worldMatrix)
+void D3DClass::GetWorldMatrix(XMMATRIX& worldMatrix)
 {
 	worldMatrix = m_worldMatrix;
 	return;
 }
 
 // 직교투영행렬 반환
-void D3DClass::GetOrthoMatrix(D3DXMATRIX& orthoMatrix)
+void D3DClass::GetOrthoMatrix(XMMATRIX& orthoMatrix)
 {
 	orthoMatrix = m_orthoMatrix;
 	return;

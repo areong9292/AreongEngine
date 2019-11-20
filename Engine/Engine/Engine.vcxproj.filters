@@ -31,6 +31,18 @@
     <Filter Include="헤더 파일\DesignPattern">
       <UniqueIdentifier>{94d7d1af-348b-4648-8d45-0822ecfb9615}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\FBXImporter">
+      <UniqueIdentifier>{39e5a4bb-a3c5-4081-8ef1-707da4ffaeca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\FBXImporter">
+      <UniqueIdentifier>{ae3bfbc7-5f50-458e-95e3-a8270464d778}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Components">
+      <UniqueIdentifier>{49380fcc-9134-4f62-b456-92c0372bdaaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Components">
+      <UniqueIdentifier>{e908a729-dd46-4ab1-a109-95a76d50bb28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DClass.cpp">
@@ -126,11 +138,20 @@
     <ClCompile Include="..\..\DesignPattern\Transform.cpp">
       <Filter>소스 파일\DesignPattern</Filter>
     </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="ShaderManager.cpp">
       <Filter>소스 파일\ShaderClass</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTextureClass.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FBXImporter.cpp">
+      <Filter>소스 파일\FBXImporter</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>소스 파일\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\DrawInspector.cpp">
+      <Filter>소스 파일\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -233,14 +254,23 @@
     <ClInclude Include="..\..\DesignPattern\Transform.h">
       <Filter>헤더 파일\DesignPattern</Filter>
     </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="DesignPatternHeader.h">
       <Filter>헤더 파일\DesignPattern</Filter>
     </ClInclude>
     <ClInclude Include="ShaderManager.h">
       <Filter>헤더 파일\ShaderClass</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTextureClass.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="FBXImporter.h">
+      <Filter>헤더 파일\FBXImporter</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>헤더 파일\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\DrawInspector.h">
+      <Filter>헤더 파일\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

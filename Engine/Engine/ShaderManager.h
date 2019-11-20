@@ -2,6 +2,7 @@
 #define _SHADERMANAGER_H_
 
 #include <d3d11.h>
+#include <DirectXMath.h>
 
 // 디자인 패턴 관련 include
 #include "DesignPatternHeader.h"
@@ -17,6 +18,7 @@
 #include "CameraClass.h"
 #include "LightClass.h"
 
+using namespace DirectX;
 
 // 쉐이더를 사용한 모든 렌더링 관리하는 클래스
 // 싱글톤으로 생성되며 카메라와 라이트 클래스의 포인터를 가지고 있다
@@ -41,7 +43,7 @@ public:
 
 	bool ShaderManager::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, CameraClass* mainCamera, LightClass* mainLight);
 	void Shutdown();
-	bool Render(ModelClass* model, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix);
+	bool Render(ModelClass* model, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
 
 	char* GetShaderType(ShaderType shaderType);
 

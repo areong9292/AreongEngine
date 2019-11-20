@@ -2,9 +2,10 @@
 #define _FONTCLASS_H_
 
 #include <d3d11.h>
-#include <D3DX10math.h>
+#include <DirectXMath.h>
 #include <fstream>
 using namespace std;
+using namespace DirectX;
 
 #include "TextureClass.h"
 
@@ -24,8 +25,8 @@ private:
 	// 문자를 삼각형 2개로 그린다 - 2D 텍스쳐 그리듯이
 	struct VertexType
 	{
-		D3DXVECTOR3 position;
-		D3DXVECTOR2 texture;
+		XMFLOAT3 position;
+		XMFLOAT2 texture;
 	};
 
 public:

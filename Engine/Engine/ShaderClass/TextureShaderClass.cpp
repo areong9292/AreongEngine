@@ -40,7 +40,7 @@ void TextureShaderClass::Shutdown()
 	return;
 }
 
-bool TextureShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+bool TextureShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
 {
 	bool result;
 
@@ -82,7 +82,7 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR
 
 	// 쉐이더 프로그램을 버퍼로 컴파일한다
 	// 정점 셰이더를 컴파일한다
-	result = D3DX11CompileFromFile(
+	result = D3DCompileFromFile(
 		vsFilename,						// 쉐이더 파일 이름
 		NULL,
 		NULL,
@@ -90,10 +90,10 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR
 		"vs_5_0",						// 쉐이더 버전
 		D3D10_SHADER_ENABLE_STRICTNESS,
 		0,
-		NULL,
 		&vertexShaderBuffer,			// 쉐이더가 컴파일 될 버퍼
-		&errorMessage,					// 에러 문자열
-		NULL);
+		&errorMessage					// 에러 문자열
+		);
+
 	if (FAILED(result))
 	{
 		// 셰이더가 컴파일에 실패하면 에러 메세지를 기록
@@ -111,7 +111,7 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR
 	}
 
 	// 픽셀 셰이더를 컴파일한다
-	result = D3DX11CompileFromFile(
+	result = D3DCompileFromFile(
 		psFilename,						// 쉐이더 파일 이름
 		NULL,
 		NULL,
@@ -119,10 +119,10 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR
 		"ps_5_0",						// 쉐이더 버전
 		D3D10_SHADER_ENABLE_STRICTNESS,
 		0,
-		NULL,
 		&pixelShaderBuffer,				// 쉐이더가 컴파일 될 버퍼
-		&errorMessage,					// 에러 문자열
-		NULL);
+		&errorMessage					// 에러 문자열
+		);
+
 	if (FAILED(result))
 	{
 		// 셰이더 컴파일이 실패하면 에러 메세지를 기록합니다.
@@ -333,7 +333,7 @@ void TextureShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND
 
 // 쉐이더의 전역 변수를 쉽게 다룰 수 있게 한다
 // GraphicsClass에서 만들어진 행렬들을 사용한다
-bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -346,9 +346,9 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 
 	// 쉐이더에서 전치행렬을 사용하는 이유
 	// 쉐이더의 변환 매크로, 변환 명령들이 열 주도 행렬들에 적합하기 때문
-	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);
-	D3DXMatrixTranspose(&viewMatrix, &viewMatrix);
-	D3DXMatrixTranspose(&projectionMatrix, &projectionMatrix);
+	worldMatrix = XMMatrixTranspose(worldMatrix);
+	viewMatrix = XMMatrixTranspose(viewMatrix);
+	projectionMatrix = XMMatrixTranspose(projectionMatrix);
 
 	// 상수 버퍼의 내용을 쓸 수 있도록 잠근다
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
