@@ -22,3 +22,4 @@ Day
 16. [Design Pattern] Implement parent - child relation in Transform, GameObject
 18. Draw parent - child relation in Hierarchy Window, & control GameObject's components in Inspector Window
 20. Remove DirectX SDK
+25. Add Assimp(Open Asset Import Library) & test

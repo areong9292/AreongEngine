@@ -32,6 +32,8 @@ GraphicsClass::GraphicsClass()
 	obj->transform->addChild(obj1->transform);
 	obj1->transform->addChild(obj2->transform);
 	obj2->transform->addChild(obj3->transform);
+
+	ourModel = nullptr;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
@@ -270,12 +272,19 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	ourModel = new ModelLoader;
+	if (!ourModel->Load(hwnd, m_D3D->GetDevice(), m_D3D->GetDeviceContext(), "../Engine/data/FBX/BlackDragon/Dragon 2.5_fbx.fbx"))
+		return false;
+
 	return true;
 }
 
 // 모든 그래픽 객체의 해제가 일어난다
 void GraphicsClass::Shutdown()
 {
+	if(ourModel != nullptr)
+		ourModel->Close();
+
 	if(obj != nullptr)
 		delete obj;
 	if (obj1 != nullptr)
@@ -398,11 +407,11 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, float rotationY, bool beginChe
 		rotation -= 360.0f;
 	}
 
-	m_Camera->SetPosition(0.0f, 0.0f, -20.0f);
+	m_Camera->SetPosition(0.0f, 0.0f, -100.0f);
 
 	// 카메라의 회전 값을 셋팅해서 입력 값에 따라
 	// 카메라를 회전시킨다
-	m_Camera->SetRotation(0.0f, rotationY, 0.0f);
+	m_Camera->SetRotation(0.0f, rotationY, 00.0f);
 
 	// 클릭했으면 픽킹 계산한다
 	if (beginCheck)
@@ -583,7 +592,6 @@ bool GraphicsClass::RenderScene(float rotation)
 				// Y축 기준으로 회전시킨다
 				rotationMatrix = XMMatrixRotationY(rotation);
 			}
-
 			// 모델의 위치로 월드 행렬 이동
 			translateMatrix = XMMatrixTranslation(positionX, positionY, positionZ);
 
@@ -607,6 +615,12 @@ bool GraphicsClass::RenderScene(float rotation)
 				return false;
 			}
 
+			if (index == 0)
+			{
+				ourModel->Draw(m_D3D->GetDeviceContext());
+			}
+
+
 			/*if (index == 0)
 			{
 				// 모델의 버텍스, 인덱스 버퍼를 파이프라인에 넣는다
@@ -623,6 +637,7 @@ bool GraphicsClass::RenderScene(float rotation)
 					return false;
 				}
 			}*/
+
 
 			rotationMatrix = worldMatrix;
 			translateMatrix = worldMatrix;

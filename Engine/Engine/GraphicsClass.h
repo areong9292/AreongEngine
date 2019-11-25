@@ -19,6 +19,8 @@
 
 #include "Material.h"
 
+#include "Assimp/ModelLoader.h"
+
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
@@ -87,6 +89,7 @@ private:
 	GameObject* obj2 = nullptr;
 	GameObject* obj3 = nullptr;
 
+	ModelLoader* ourModel;
 };
 
 #endif
