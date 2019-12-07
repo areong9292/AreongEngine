@@ -13,7 +13,7 @@
 #include "TextureLoader.h"
 
 using namespace DirectX;
-
+class ShaderManager;
 class ModelLoader
 {
 public:
@@ -22,6 +22,7 @@ public:
 
 	bool Load(HWND hwnd, ID3D11Device* dev, ID3D11DeviceContext* devcon, std::string filename);
 	void Draw(ID3D11DeviceContext* devcon);
+	void RenderMesh(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
 
 	void Close();
 private:
@@ -38,6 +39,8 @@ private:
 	string determineTextureType(const aiScene* scene, aiMaterial* mat);
 	int getTextureIndex(aiString* str);
 	ID3D11ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureindex);
+
+	ShaderManager* m_ShaderManager;
 };
 
 #endif // !MODEL_LOADER_H

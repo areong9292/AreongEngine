@@ -88,7 +88,7 @@ void ModelClass::test(vector<FBXImporter::MyVertex> test)
 {
 	int count = 0;
 	int countEnd = 0;
-	if (test.size() >= m_vertexCount / 3)
+	if ((int)test.size() >= m_vertexCount / 3)
 	{
 		count = m_vertexCount / 3;
 		countEnd = test.size();

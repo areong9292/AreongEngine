@@ -199,7 +199,7 @@ void ImGuiEditorClass::DrawDock(ID3D11ShaderResourceView* shaderResourceView)
 		// ¾À ºä
 		{
 			ImGui::Begin("scene");
-			ImGui::Image((void*)shaderResourceView, ImVec2(m_screenWidth, m_screenHeight));
+			ImGui::Image((void*)shaderResourceView, ImVec2((float)m_screenWidth, (float)m_screenHeight));
 			ImGui::End();
 		}
 

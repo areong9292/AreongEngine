@@ -2,9 +2,10 @@
 #define _CAMERACLASS_H_
 
 #include <DirectXMath.h>
+#include "./Utils/AlignedAllocationPolicy.h"
 using namespace DirectX;
 
-class CameraClass
+class CameraClass : public AlignedAllocationPolicy<16>
 {
 public:
 	CameraClass();

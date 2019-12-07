@@ -16,7 +16,6 @@ ModelListClass::~ModelListClass()
 
 bool ModelListClass::Initialize(D3DClass* m_D3D)
 {
-	int i;
 	float red, green, blue;
 
 	// 모델의 정보가 담긴 파일을 읽어온다

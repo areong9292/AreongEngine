@@ -618,6 +618,7 @@ bool GraphicsClass::RenderScene(float rotation)
 			if (index == 0)
 			{
 				ourModel->Draw(m_D3D->GetDeviceContext());
+				ourModel->RenderMesh(resultMatrix, viewMatrix, projectionMatrix);
 			}
 
 

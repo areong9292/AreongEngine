@@ -25,6 +25,7 @@ using namespace DirectX;
 // 인자로 받은 머테리얼의 정보에 맞춰 렌더링해준다
 class Material;
 class ModelClass;
+class Mesh;
 class ShaderManager : public Singleton<ShaderManager>
 {
 public:
@@ -44,6 +45,7 @@ public:
 	bool ShaderManager::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, CameraClass* mainCamera, LightClass* mainLight);
 	void Shutdown();
 	bool Render(ModelClass* model, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
+	bool RenderMesh(Mesh mesh, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
 
 	char* GetShaderType(ShaderType shaderType);
 

@@ -1,6 +1,7 @@
 #include "ShaderManager.h"
 #include "Material.h"
 #include "ModelClass.h"
+#include "./Assimp/Mesh.h"
 
 ShaderManager::ShaderManager()
 {
@@ -66,9 +67,7 @@ void ShaderManager::Shutdown()
 		delete m_TextureShader;
 		m_TextureShader = nullptr;
 	}
-
 }
-
 
 bool ShaderManager::Render(ModelClass* model, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
 {
@@ -158,6 +157,94 @@ bool ShaderManager::Render(ModelClass* model, XMMATRIX worldMatrix, XMMATRIX vie
 		}
 
 		result = m_ColorShader->Render(m_DeviceContext, model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+
+		break;
+	case ShaderManager::FONT:
+		break;
+	default:
+		break;
+	}
+
+	return true;
+}
+
+bool ShaderManager::RenderMesh(Mesh mesh, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
+{
+	bool result;
+	ShaderType modelShaderType = ShaderManager::LIGHT;
+	switch (modelShaderType)
+	{
+	case ShaderManager::LIGHT:
+		if (m_LightShader == nullptr)
+		{
+			m_LightShader = new LightShaderClass;
+			if (m_LightShader == nullptr)
+			{
+				return false;
+			}
+
+			result = m_LightShader->Initialize(m_Device, m_Hwnd);
+			if (!result)
+			{
+				return false;
+			}
+		}
+
+		// 쉐이더로 그린다
+		result = m_LightShader->Render(
+			m_DeviceContext,
+			mesh.indices.size(),
+			worldMatrix, viewMatrix, projectionMatrix,		// 월드, 뷰, 투영 행렬
+			mesh.textures[0].texture,						// 모델의 머테리얼의 텍스쳐
+			m_MainLight->GetDirection(),					// 조명의 방향
+			m_MainLight->GetAmbientColor(),					// 주변광의 색
+			m_MainLight->GetDiffuseColor(),					// 조명의 색
+
+			// 반사광
+			m_MainCamera->GetPosition(),					// 카메라의 위치
+			m_MainLight->GetSpecularColor(),				// 반사광의 색
+			m_MainLight->GetSpecularPower());				// 반사광의 강도
+		//m_LightShader->Render(m_Device,)
+
+		break;
+	case ShaderManager::TEXTURE:
+
+		if (m_TextureShader == nullptr)
+		{
+			m_TextureShader = new TextureShaderClass;
+			if (m_TextureShader == nullptr)
+			{
+				return false;
+			}
+
+			result = m_TextureShader->Initialize(m_Device, m_Hwnd);
+			if (!result)
+			{
+				return false;
+			}
+		}
+
+		result = m_TextureShader->Render(m_DeviceContext, mesh.indices.size(), worldMatrix, viewMatrix, projectionMatrix, mesh.textures[0].texture);
+
+		break;
+	case ShaderManager::COLOR:
+
+		if (m_ColorShader == nullptr)
+		{
+			m_ColorShader = new ColorShaderClass;
+			if (m_ColorShader == nullptr)
+			{
+				return false;
+			}
+
+			result = m_ColorShader->Initialize(m_Device, m_Hwnd);
+			if (!result)
+			{
+				return false;
+			}
+		}
+
+		result = m_ColorShader->Render(m_DeviceContext, mesh.indices.size(), worldMatrix, viewMatrix, projectionMatrix);
 
 		break;
 	case ShaderManager::FONT:

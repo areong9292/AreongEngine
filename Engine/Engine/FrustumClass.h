@@ -2,9 +2,11 @@
 #define _FRUSTUMCLASS_H_
 
 #include <DirectXMath.h>
+
+#include "./Utils/AlignedAllocationPolicy.h"
 using namespace DirectX;
 
-class FrustumClass
+class FrustumClass : public AlignedAllocationPolicy<16>
 {
 public:
 	FrustumClass();

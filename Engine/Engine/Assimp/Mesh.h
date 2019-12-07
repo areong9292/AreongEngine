@@ -96,6 +96,8 @@ private:
 		hr = dev->CreateBuffer(&ibd, &initData, &IndexBuffer);
 		if (FAILED(hr))
 			return false;
+
+		return true;
 	}
 };
 

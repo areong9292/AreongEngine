@@ -18,10 +18,11 @@
 #include <iostream>
 #include <fstream>
 
+#include "./Utils/AlignedAllocationPolicy.h"
 using namespace DirectX;
 
 // Direct3D 기능들을 다루는 클래스
-class D3DClass
+class D3DClass : public AlignedAllocationPolicy<16>
 {
 public:
 	D3DClass();

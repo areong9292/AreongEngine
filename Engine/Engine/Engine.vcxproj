@@ -209,6 +209,7 @@
     <ClInclude Include="TextClass.h" />
     <ClInclude Include="TextureClass.h" />
     <ClInclude Include="TimerClass.h" />
+    <ClInclude Include="Utils\AlignedAllocationPolicy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Color.ps" />

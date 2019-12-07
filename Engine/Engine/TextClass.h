@@ -3,9 +3,10 @@
 
 #include "FontClass.h"
 #include "ShaderClass/FontShaderClass.h"
+#include "./Utils/AlignedAllocationPolicy.h"
 
 // 2d 문자열을 화면에 그리는 클래스
-class TextClass
+class TextClass : public AlignedAllocationPolicy<16>
 {
 private:
 	// 각 문장의 렌더링 정보를 저장

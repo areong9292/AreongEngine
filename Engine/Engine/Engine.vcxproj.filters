@@ -49,6 +49,9 @@
     <Filter Include="헤더 파일\Assimp">
       <UniqueIdentifier>{c9c1a67e-15a8-4428-8c3d-3ed485e02234}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Utils">
+      <UniqueIdentifier>{db239483-0c6d-424c-aa92-285c67ec262d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DClass.cpp">
@@ -292,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="Assimp\Mesh.h">
       <Filter>헤더 파일\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\AlignedAllocationPolicy.h">
+      <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

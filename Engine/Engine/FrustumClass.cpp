@@ -99,7 +99,6 @@ void FrustumClass::ConstructFrustum(float screenDepth, XMMATRIX projectionMatrix
 // 하나의 점이 절두체 내부에 있는지 여부
 bool FrustumClass::Checkpoint(float x, float y, float z)
 {
-	int i;
 	for (int i = 0; i < 6; i++)
 	{
 		// 평면 뒤에 있으면 절두체 벗어난 것
@@ -116,8 +115,6 @@ bool FrustumClass::Checkpoint(float x, float y, float z)
 // 모든 꼭지점이 절두체 내에 있어야 한다
 bool FrustumClass::CheckCube(float xCenter, float yCenter, float zCenter, float radius)
 {
-	int i;
-
 	for (int i = 0; i < 6; i++)
 	{
 		// 한 평면에 대해 8개 꼭지점 모두 계산하여
@@ -153,8 +150,6 @@ bool FrustumClass::CheckSphere(float xCenter, float yCenter, float zCenter, floa
 
 bool FrustumClass::CheckRectangle(float xCenter, float yCenter, float zCenter, float xSize, float ySize, float zSize)
 {
-	int i;
-
 	for (int i = 0; i < 6; i++)
 	{
 		// 한 평면에 대해 8개 꼭지점 모두 계산하여

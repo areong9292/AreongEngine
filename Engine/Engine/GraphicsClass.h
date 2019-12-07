@@ -21,13 +21,15 @@
 
 #include "Assimp/ModelLoader.h"
 
+#include "./Utils/AlignedAllocationPolicy.h"
+
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
 const float SCREEN_NEAR = 0.1f;
 
 // 모든 그래픽 관련 기능, 객체를 관리하는 클래스
-class GraphicsClass
+class GraphicsClass : public AlignedAllocationPolicy<16>
 {
 public:
 	GraphicsClass();

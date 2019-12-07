@@ -1,9 +1,10 @@
 #include "ModelLoader.h"
+#include "../ShaderManager.h"
 
 ModelLoader::ModelLoader()
 {
+	m_ShaderManager = nullptr;
 }
-
 
 ModelLoader::~ModelLoader()
 {
@@ -27,14 +28,28 @@ bool ModelLoader::Load(HWND hwnd, ID3D11Device * dev, ID3D11DeviceContext * devc
 
 	processNode(pScene->mRootNode, pScene);
 
+	m_ShaderManager = Singleton<ShaderManager>::GetInstance();
+	if (m_ShaderManager == nullptr)
+	{
+		return false;
+	}
+
 	return true;
 }
 
 void ModelLoader::Draw(ID3D11DeviceContext * devcon)
 {
-	for (int i = 0; i < meshes.size(); i++)
+	for (int i = 0; i < (int)meshes.size(); i++)
 	{
 		meshes[i].Draw(devcon);
+	}
+}
+
+void ModelLoader::RenderMesh(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
+{
+	for (int i = 0; i < (int)meshes.size(); i++)
+	{
+		m_ShaderManager->RenderMesh(meshes[i], worldMatrix, viewMatrix, projectionMatrix);
 	}
 }
 
@@ -138,7 +153,7 @@ vector<Texture> ModelLoader::loadMaterialTextures(aiMaterial * mat, aiTextureTyp
 
 void ModelLoader::Close()
 {
-	for (int i = 0; i < meshes.size(); i++)
+	for (int i = 0; i < (int)meshes.size(); i++)
 	{
 		meshes[i].Close();
 	}
@@ -180,6 +195,8 @@ string ModelLoader::determineTextureType(const aiScene * scene, aiMaterial * mat
 	{
 		return "textures are on disk";
 	}
+
+	return "";
 }
 
 int ModelLoader::getTextureIndex(aiString * str)
