@@ -50,7 +50,8 @@ bool D3DApp::InitializeDirect3d11App(int screenWidth, int screenHeight, HWND hWn
 
 	if (FAILED(result))
 	{
-
+		MessageBox(0, L"D3D11CreateDeviceAndSwapChain - Failed",
+			L"Error", MB_OK);
 		return false;
 	}
 
@@ -60,6 +61,8 @@ bool D3DApp::InitializeDirect3d11App(int screenWidth, int screenHeight, HWND hWn
 
 	if (FAILED(result))
 	{
+		MessageBox(0, L"SwapChain->GetBuffer - Failed",
+			L"Error", MB_OK);
 		return false;
 	}
 
@@ -69,6 +72,8 @@ bool D3DApp::InitializeDirect3d11App(int screenWidth, int screenHeight, HWND hWn
 
 	if (FAILED(result))
 	{
+		MessageBox(0, L"d3d11Device->CreateRenderTargetView - Failed",
+			L"Error", MB_OK);
 		return false;
 	}
 
