@@ -105,7 +105,7 @@ bool D3DApp::InitScene()
 
 void D3DApp::UpdateScene()
 {
-	//Update the colors of our scene
+	// 매 프레임마다 컬러 값 변경한다
 	red += colormodr * 0.00005f;
 	green += colormodg * 0.00002f;
 	blue += colormodb * 0.00001f;

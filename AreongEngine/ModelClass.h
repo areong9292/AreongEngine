@@ -21,7 +21,7 @@ public:
 
 private:
 	// 버텍스 생성
-	Vertex v[] =
+	Vertex v[3] =
 	{
 		Vertex(0.0f, 0.5f, 0.5f),
 		Vertex(0.5f, -0.5f, 0.5f),
